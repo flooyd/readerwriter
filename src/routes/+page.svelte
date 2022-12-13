@@ -54,5 +54,6 @@
 		padding: 4px 8px;
 		background: lightcoral;
 		font-family: 'Lobster', cursive;
+		margin-bottom: 40px;
 	}
 </style>
