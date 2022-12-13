@@ -71,6 +71,7 @@
 		margin-top: 20px;
 		font-size: 31px;
 		font-style: italic;
+		margin-bottom: 20px;
 	}
 
 	blockquote span {
@@ -78,10 +79,5 @@
 		color: lightcoral;
 		font-weight: bold;
 		margin-left: 13px;
-	}
-
-	blockquote.sagan {
-		font-size: 20px;
-		line-height: 1.33;
 	}
 </style>
