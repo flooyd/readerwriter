@@ -3,10 +3,10 @@ import { MONGO_URL } from '$env/static/private';
 
 const client = new MongoClient(MONGO_URL, { useUnifiedTopology: true });
 
-export function start_mongo() {
+export async function start_mongo() {
 	console.log('MONGO_URL', MONGO_URL);
 	console.log('Starting mongo...');
-	return client.connect();
+	return await client.connect();
 }
 
 export default client.db('readerwriter');
