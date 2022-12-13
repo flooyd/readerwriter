@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import { MONGO_URL } from '$env/static/private';
 
-const client = new MongoClient(MONGO_URL, { userNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(MONGO_URL, { useUnifiedTopology: true });
 
 export function start_mongo() {
 	console.log('MONGO_URL', MONGO_URL);
