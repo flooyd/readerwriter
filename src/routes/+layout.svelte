@@ -1,3 +1,18 @@
+<script>
+	import { tick } from 'svelte';
+	import { loginOrRegister } from '../stores.js';
+
+	const handleLoginOrRegister = async (option) => {
+		if ($loginOrRegister === option) {
+			return;
+		} else {
+			$loginOrRegister = null;
+			await tick();
+			$loginOrRegister = option;
+		}
+	};
+</script>
+
 <div class="layout">
 	<nav>
 		<div>
@@ -6,8 +21,8 @@
 		<div class="links">
 			<a href="/demo/dashboard">Demo</a>
 			<a href="/about">About</a>
-			<a href="/auth/login">Login</a>
-			<a href="/auth/register">Register</a>
+			<a on:click={() => handleLoginOrRegister('login')} href="/auth/login">Login</a>
+			<a on:click={() => handleLoginOrRegister('register')} href="/auth/register">Register</a>
 		</div>
 	</nav>
 

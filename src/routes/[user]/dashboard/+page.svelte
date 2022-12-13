@@ -2,6 +2,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 
@@ -47,6 +48,10 @@
 		});
 	};
 
+	const handleClickArticle = (title) => {
+		goto(`/${data.user}/${title}`);
+	};
+
 	console.log(data);
 </script>
 
@@ -64,7 +69,14 @@
 	{#if ready}
 		<div class="articles">
 			{#each preparedArticles as article (article._id)}
-				<div in:fade={{ duration: 100 }} class="article">
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div
+					in:fade={{ duration: 100 }}
+					class="article"
+					on:click={() => {
+						handleClickArticle(article.title);
+					}}
+				>
 					<div class="articleTitle">
 						<div>
 							{article.title}

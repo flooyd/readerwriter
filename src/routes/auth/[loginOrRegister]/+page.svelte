@@ -2,31 +2,31 @@
 	import { fade } from 'svelte/transition';
 	export let data;
 	import { enhance } from '$app/forms';
+	import { loginOrRegister } from '../../../stores.js';
 	let username,
 		email,
-		password,
-		loginOrRegister = '';
+		password = '';
 
-	$: data ? (loginOrRegister = data.loginOrRegister) : null;
+	$: data ? ($loginOrRegister = data.loginOrRegister) : null;
 </script>
 
-{#if loginOrRegister}
-	<div class="auth" in:fade>
+{#if $loginOrRegister}
+	<div class="auth" in:fade={{ duration: 300 }}>
 		<div class="title">
-			{loginOrRegister === 'login' ? 'Login' : 'Register'}
+			{$loginOrRegister === 'login' ? 'Login' : 'Register'}
 		</div>
 
 		<div>
 			<a
-				on:click={() => (loginOrRegister = null)}
-				href={`/auth/${loginOrRegister === 'login' ? 'register' : 'login'}`}
-				>{loginOrRegister === 'login' ? 'First time?' : 'Already registered?'}
-				<span>{loginOrRegister === 'login' ? 'Register' : 'Login'}</span>
+				on:click={() => ($loginOrRegister = null)}
+				href={`/auth/${$loginOrRegister === 'login' ? 'register' : 'login'}`}
+				>{$loginOrRegister === 'login' ? 'First time?' : 'Already registered?'}
+				<span>{$loginOrRegister === 'login' ? 'Register' : 'Login'}</span>
 				<i class="fa-solid fa-arrow-right" /></a
 			>
 		</div>
 
-		<form use:enhance method="POST" action={'?/' + loginOrRegister}>
+		<form use:enhance method="POST" action={'?/' + $loginOrRegister}>
 			<label for="email">Email</label>
 			<input autocomplete="off" type="text" name="email" bind:value={email} />
 			<label for="username">Username</label>
@@ -36,14 +36,14 @@
 			<button>Go</button>
 		</form>
 
-		{#if loginOrRegister === 'login'}
+		{#if $loginOrRegister === 'login'}
 			<blockquote>
 				“If my doctor told me I had only six minutes to live, I wouldn't brood. I'd type a little
 				faster.” <span>Isaac Asimov</span>
 			</blockquote>
 		{/if}
 
-		{#if loginOrRegister === 'register'}
+		{#if $loginOrRegister === 'register'}
 			<blockquote>
 				“Writing is supposed to be difficult, agonizing, a dreadful exercise, a terrible
 				occupation.”
@@ -55,8 +55,8 @@
 
 <style>
 	.auth {
-		margin: 40px;
-		margin-left: 20px;
+		margin: 40px 0px;
+		padding: 0px 20px;
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
@@ -121,5 +121,11 @@
 		color: lightcoral;
 		font-weight: bold;
 		margin-left: 13px;
+	}
+
+	@media screen and (max-width: 550px) {
+		blockquote {
+			max-width: 300px;
+		}
 	}
 </style>
