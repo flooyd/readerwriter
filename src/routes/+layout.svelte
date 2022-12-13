@@ -6,8 +6,8 @@
 		<div class="links">
 			<a href="/demo/dashboard">Demo</a>
 			<a href="/about">About</a>
-			<a href="/login">Login</a>
-			<a href="/register">Register</a>
+			<a href="/auth/login">Login</a>
+			<a href="/auth/register">Register</a>
 		</div>
 	</nav>
 
@@ -27,7 +27,7 @@
 		width: 100vw;
 		background: #333;
 		margin: 0px;
-		padding: 4px 20px;
+		padding: 8px 20px;
 	}
 
 	nav div {

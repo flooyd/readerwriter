@@ -1,18 +1,29 @@
 <script>
-	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
+	let ready = false;
+
+	onMount(() => {
+		ready = true;
+	});
 </script>
 
-<div in:fade class="home">
-	<div class="intro">Welcome to Read and Write.</div>
-	<div class="description">Read and Write is a simple blog site.</div>
-	<div class="more">
-		<div>Add friends,</div>
-		<div>Leave comments</div>
-		<div>Suggest edits</div>
-		<div>etc.</div>
+{#if ready}
+	<div class="home">
+		<div class="intro" in:fade={{ duration: 300 }}>Welcome to Read and Write.</div>
+		<div class="description" in:fade={{ duration: 300 }}>Read and Write is a simple blog site.</div>
+		<div class="more">
+			<div in:fly={{ x: -500, duration: 900 }}>Add friends,</div>
+			<div in:fly={{ x: -500, duration: 900 }}>leave comments,</div>
+			<div in:fly={{ x: -500, duration: 900 }}>suggest edits,</div>
+			<div in:fly={{ x: -500, duration: 900 }}>etc.</div>
+		</div>
+		<button in:fade={{ duration: 300 }}>Go</button>
+		<blockquote in:fade={{ duration: 300 }}>
+			"You can make anything by writing." <span>C.S. Lewis</span>
+		</blockquote>
 	</div>
-	<button>Go</button>
-</div>
+{/if}
 
 <style>
 	.home {
@@ -20,7 +31,7 @@
 		flex-direction: column;
 		gap: 40px;
 		justify-content: center;
-		padding-left: 48px;
+		padding-left: 20px;
 		padding-right: 48px;
 	}
 	.intro {
@@ -54,6 +65,23 @@
 		padding: 4px 8px;
 		background: lightcoral;
 		font-family: 'Lobster', cursive;
-		margin-bottom: 40px;
+	}
+
+	blockquote {
+		margin-top: 20px;
+		font-size: 31px;
+		font-style: italic;
+	}
+
+	blockquote span {
+		font-style: normal;
+		color: lightcoral;
+		font-weight: bold;
+		margin-left: 13px;
+	}
+
+	blockquote.sagan {
+		font-size: 20px;
+		line-height: 1.33;
 	}
 </style>

@@ -28,8 +28,5 @@ export const actions = {
 		} catch (e) {
 			console.error(e);
 		}
-	},
-	register: async (event) => {
-		// TODO register the user
 	}
 };
