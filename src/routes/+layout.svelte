@@ -51,4 +51,14 @@
 	.links a {
 		margin-left: 13px;
 	}
+
+	@media screen and (max-width: 550px) {
+		.title {
+			font-size: 16px;
+		}
+
+		.links a {
+			font-size: 13px;
+		}
+	}
 </style>
