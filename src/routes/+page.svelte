@@ -3,10 +3,7 @@
 </script>
 
 <div in:fade class="home">
-	<div class="intro">
-		<div>Welcome to Read and Write.</div>
-		<img src="/writingimage.png" alt="pencil" />
-	</div>
+	<div class="intro">Welcome to Read and Write.</div>
 	<div class="description">Read and Write is a simple blog site.</div>
 	<div class="more">
 		<div>Add friends,</div>
@@ -23,11 +20,11 @@
 		flex-direction: column;
 		gap: 40px;
 		justify-content: center;
-		height: calc(100% - 33px);
 		padding-left: 48px;
-		margin-top: -20px;
+		padding-right: 48px;
 	}
 	.intro {
+		margin-top: 40px;
 		font-size: 76px;
 		font-weight: bold;
 		display: flex;
@@ -36,15 +33,12 @@
 		width: fit-content;
 		gap: 20px;
 	}
-	.intro img {
-		height: 152px;
-	}
+
 	.description {
 		font-size: 48px;
 		color: lightcoral;
 		font-weight: bold;
 		font-family: 'Lobster', cursive;
-		margin-top: -36px;
 	}
 
 	.more {

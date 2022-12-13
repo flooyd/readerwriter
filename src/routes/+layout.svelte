@@ -17,7 +17,7 @@
 <style>
 	.layout {
 		background: white;
-		height: 100vh;
+		height: fit-content;
 		font-family: 'Oswald', sans-serif;
 	}
 	nav {
@@ -30,6 +30,10 @@
 		padding: 4px 20px;
 	}
 
+	nav div {
+		width: fit-content;
+	}
+
 	.title {
 		font-size: 25px;
 		font-family: 'Lobster', cursive;
@@ -38,6 +42,10 @@
 	a {
 		color: white;
 		text-decoration: none;
+	}
+
+	.links {
+		text-align: right;
 	}
 
 	.links a {
