@@ -6,7 +6,7 @@ const config = {
 		adapter: adapter(),
 		vite: {
 			optimizeDeps: {
-				exclude: ['mongojs']
+				exclude: ['mongodb']
 			}
 		}
 	}
