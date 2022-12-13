@@ -11,7 +11,7 @@
 {#if ready}
 	<div class="home">
 		<div class="intro" in:fade={{ duration: 300 }}>Welcome to Read and Write.</div>
-		<div class="description" in:fade={{ duration: 300 }}>Read and Write is a simple blog site.</div>
+		<div class="description" in:fade={{ duration: 300 }}>A simple blog site</div>
 		<div class="more">
 			<div in:fly={{ x: -500, duration: 900 }}>Add friends,</div>
 			<div in:fly={{ x: -500, duration: 900 }}>leave comments,</div>
