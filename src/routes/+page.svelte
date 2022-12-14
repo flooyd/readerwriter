@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { fade, fly } from 'svelte/transition';
 	let ready = false;
 
@@ -10,7 +11,9 @@
 
 {#if ready}
 	<div class="home">
-		<div class="intro" in:fade={{ duration: 300 }}>Welcome to Read and Write.</div>
+		<div class="intro" in:fade={{ duration: 300 }}>
+			Welcome to Read and Write{$page.data.username ? ', ' + $page.data.username + '.' : '.'}
+		</div>
 		<div class="description" in:fade={{ duration: 300 }}>A blogging and storytelling site</div>
 		<div in:fade={{ duration: 300 }} class="more">Featured Articles coming soon.</div>
 		<blockquote in:fade={{ duration: 300 }}>
