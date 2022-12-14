@@ -11,14 +11,8 @@
 {#if ready}
 	<div class="home">
 		<div class="intro" in:fade={{ duration: 300 }}>Welcome to Read and Write.</div>
-		<div class="description" in:fade={{ duration: 300 }}>A simple blog site</div>
-		<div class="more">
-			<div in:fly={{ x: -500, duration: 900 }}>Add friends,</div>
-			<div in:fly={{ x: -500, duration: 900 }}>leave comments,</div>
-			<div in:fly={{ x: -500, duration: 900 }}>suggest edits,</div>
-			<div in:fly={{ x: -500, duration: 900 }}>etc.</div>
-		</div>
-		<button in:fade={{ duration: 300 }}>Go</button>
+		<div class="description" in:fade={{ duration: 300 }}>A blogging and storytelling site</div>
+		<div in:fade={{ duration: 300 }} class="more">Featured Articles coming soon.</div>
 		<blockquote in:fade={{ duration: 300 }}>
 			"You can make anything by writing." <span>C.S. Lewis</span>
 		</blockquote>
