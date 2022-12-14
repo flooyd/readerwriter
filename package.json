@@ -14,7 +14,6 @@
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/adapter-vercel": "next",
 		"@sveltejs/kit": "next",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
