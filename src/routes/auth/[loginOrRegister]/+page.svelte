@@ -1,13 +1,18 @@
 <script>
 	import { fade } from 'svelte/transition';
-	export let data;
 	import { enhance } from '$app/forms';
 	import { loginOrRegister } from '../../../stores.js';
+
+	export let data;
+	/** @type {import('./$types').ActionData} */
+	export let form;
+
 	let username,
 		email,
 		password = '';
 
 	$: data ? ($loginOrRegister = data.loginOrRegister) : null;
+	$: console.log(form);
 </script>
 
 {#if $loginOrRegister}
@@ -29,11 +34,37 @@
 		<form use:enhance method="POST" action={'?/' + $loginOrRegister}>
 			<label for="email">Email</label>
 			<input autocomplete="off" type="text" name="email" bind:value={email} />
-			<label for="username">Username</label>
-			<input autocomplete="off" type="text" name="username" bind:value={username} />
+			{#if form?.emailRequired}
+				<div class="error">{form.emailRequired}</div>
+			{/if}
+			{#if form?.notEmail}
+				<div class="error">{form.notEmail}</div>
+			{/if}
+			{#if $loginOrRegister === 'register'}
+				<label for="username">Username</label>
+				<input autocomplete="off" type="text" name="username" bind:value={username} />
+				{#if form?.usernameRequired}
+					<div class="error">{form.usernameRequired}</div>
+				{/if}
+				{#if form?.invalidUsername}
+					<div class="error">{form.invalidUsername}</div>
+				{/if}
+			{/if}
 			<label for="password">Password</label>
-			<input autocomplete="off" type="text" name="password" bind:value={password} />
-			<button>Go</button>
+			<input autocomplete="off" type="password" name="password" bind:value={password} />
+			{#if form?.passwordRequired}
+				<div class="error">{form.passwordRequired}</div>
+			{/if}
+			{#if form?.invalidPassword}
+				<div class="error">{form.invalidPassword}</div>
+			{/if}
+			{#if form?.notUnique}
+				<div class="error">{form.notUnique}</div>
+			{/if}
+			{#if form?.invalidUser}
+				<div class="error">{form.invalidUser}</div>
+			{/if}
+			<button type="submit">Go</button>
 		</form>
 
 		{#if $loginOrRegister === 'login'}
@@ -121,6 +152,10 @@
 		color: lightcoral;
 		font-weight: bold;
 		margin-left: 13px;
+	}
+
+	.error {
+		color: red;
 	}
 
 	@media screen and (max-width: 550px) {
