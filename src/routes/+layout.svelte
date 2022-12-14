@@ -1,6 +1,9 @@
 <script>
 	import { tick } from 'svelte';
+	import { page } from '$app/stores';
 	import { loginOrRegister } from '../stores.js';
+
+	let logoutForm = null;
 
 	const handleLoginOrRegister = async (option) => {
 		if ($loginOrRegister === option) {
@@ -11,6 +14,8 @@
 			$loginOrRegister = option;
 		}
 	};
+
+	console.log($page);
 </script>
 
 <div class="layout">
@@ -21,8 +26,13 @@
 		<div class="links">
 			<a href="/demo/dashboard">Demo</a>
 			<a href="/about">About</a>
-			<a on:click={() => handleLoginOrRegister('login')} href="/auth/login">Login</a>
-			<a on:click={() => handleLoginOrRegister('register')} href="/auth/register">Register</a>
+			{#if !$page.data.auth}
+				<a on:click={() => handleLoginOrRegister('login')} href="/auth/login">Login</a>
+				<a on:click={() => handleLoginOrRegister('register')} href="/auth/register">Register</a>
+			{/if}
+			{#if $page.data.auth}
+				<a href="/auth/logout">Logout</a>
+			{/if}
 		</div>
 	</nav>
 
