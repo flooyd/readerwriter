@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { editMode } from '../../../stores';
 
 	export let data;
 
@@ -48,7 +49,10 @@
 		});
 	};
 
-	const handleClickArticle = (title) => {
+	const handleClickArticle = (title, edit = false) => {
+		if (edit) {
+			$editMode = true;
+		}
 		goto(`/${data.user}/${title}`);
 	};
 
@@ -90,20 +94,30 @@
 							{article.title}
 						</div>
 						{#if $page.data?.auth && $page.data?.username === data.user}
-							<div class="articleOptions">
-								<button class="editbutton" formaction="?/editArticle">
-									<i class="fa-solid fa-pen-to-square" />
-								</button>
-								<button class="deleteButton" formaction="?/deleteArticle">
-									<i class="fa-solid fa-trash" />
-								</button>
-							</div>
+							<form use:enhance method="POST">
+								<div class="articleOptions">
+									<button
+										on:click={(e) => {
+											e.stopPropagation();
+											handleClickArticle(article.title, true);
+										}}
+										class="editButton"
+									>
+										<i class="fa-solid fa-pen-to-square" />
+									</button>
+									<button
+										on:click={(e) => e.stopPropagation()}
+										class="deleteButton"
+										formaction="?/deleteArticle"
+									>
+										<i class="fa-solid fa-trash" />
+									</button>
+									<input type="hidden" name="_id" value={article._id} />
+								</div>
+							</form>
 						{/if}
 					</div>
 					<div class="updated">Last Updated: {getTimeStringFromUnix(article.updatedAt)}</div>
-					<form use:enhance method="POST">
-						<input type="hidden" name="_id" value={article._id} />
-					</form>
 				</div>
 			{/each}
 		</div>
@@ -163,5 +177,11 @@
 	}
 	.updated {
 		font-size: 13px;
+	}
+	.editButton:hover {
+		background: #0e4b3c;
+	}
+	.createButton:hover {
+		background: lightcoral;
 	}
 </style>

@@ -16,6 +16,7 @@
 
 <svelte:head>
 	<title>Read and Write Auth</title>
+	<meta name="description" content="The auth page for Read and Write" />
 </svelte:head>
 {#if $loginOrRegister}
 	<div class="auth" in:fade={{ duration: 300 }}>

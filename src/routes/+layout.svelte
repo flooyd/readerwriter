@@ -35,15 +35,15 @@
 		</div>
 	</nav>
 
-	<slot />
+	<slot class="nonlayout" />
 </div>
 
 <style>
 	.layout {
-		background: white;
-		height: fit-content;
 		font-family: 'Oswald', sans-serif;
+		height: fit-content;
 	}
+
 	nav {
 		display: flex;
 		justify-content: space-between;
@@ -52,6 +52,7 @@
 		background: #333;
 		margin: 0px;
 		padding: 8px 20px;
+		height: fit-content;
 	}
 
 	nav div {

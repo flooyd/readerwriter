@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
+	import { editMode } from '../../../stores';
 	export let data;
 
 	let preparedArticle;
@@ -61,6 +62,11 @@
 			method="POST"
 		>
 			<div>{preparedArticle.title}</div>
+			{#if $page.data.auth && $page.data.username === data.user}
+				<button class="editButton" type="button" on:click={() => ($editMode = !$editMode)}
+					>{$editMode ? 'Hide Editor' : 'Show Editor'}</button
+				>
+			{/if}
 			<input type="hidden" name="article" value={JSON.stringify(preparedArticle)} />
 			<button formaction="?/save" bind:this={saveButton} type="submit" style="display: none;"
 				>Save</button
@@ -71,7 +77,7 @@
 		An article by {preparedArticle.author}
 		<span>- Last updated on {getTimeStringFromUnix(preparedArticle.updatedAt)}</span>
 	</div>
-	{#if $page.data.auth && $page.data.username === data.user}
+	{#if $page.data.auth && $page.data.username === data.user && $editMode}
 		<textarea
 			bind:this={textArea}
 			bind:value={preparedArticle.content}
@@ -133,5 +139,9 @@
 		min-height: 300px;
 		padding: 0px;
 		white-space: pre-wrap;
+	}
+
+	.editButton:hover {
+		background: #0e4b3c;
 	}
 </style>
