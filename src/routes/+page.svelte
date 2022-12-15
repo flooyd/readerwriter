@@ -9,6 +9,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Read and Write</title>
+	<meta name="description" content="Read and Write, a blogging and storytelling site." />
+</svelte:head>
 {#if ready}
 	<div class="home">
 		<div class="intro" in:fade={{ duration: 300 }}>

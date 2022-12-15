@@ -14,6 +14,9 @@
 	$: data ? ($loginOrRegister = data.loginOrRegister) : null;
 </script>
 
+<svelte:head>
+	<title>Read and Write Auth</title>
+</svelte:head>
 {#if $loginOrRegister}
 	<div class="auth" in:fade={{ duration: 300 }}>
 		<div class="title">

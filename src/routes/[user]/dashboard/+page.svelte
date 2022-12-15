@@ -56,6 +56,11 @@
 	console.log($page.data);
 </script>
 
+<svelte:head>
+	<title>Read and Write Dashboard</title>
+	<meta name="description" content="Read and Write Dashboard" />
+</svelte:head>
+
 <div class="dashboard" in:fade={{ duration: 100 }}>
 	<div class="user">
 		{data.user}'s Articles ({data.articles.length})

@@ -45,6 +45,11 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Read and Write - {preparedArticle.title}</title>
+	<meta name="description" content={`Read and Write - ${preparedArticle.title}`} />
+</svelte:head>
+
 <div in:fade={{ duration: 300 }} class="article">
 	<div class="title">
 		<form
