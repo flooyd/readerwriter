@@ -16,9 +16,6 @@
 		</div>
 		<div class="description" in:fade={{ duration: 300 }}>A blogging and storytelling site</div>
 		<div in:fade={{ duration: 300 }} class="more">Featured Articles coming soon.</div>
-		<blockquote in:fade={{ duration: 300 }}>
-			"You can make anything by writing." <span>C.S. Lewis</span>
-		</blockquote>
 	</div>
 {/if}
 

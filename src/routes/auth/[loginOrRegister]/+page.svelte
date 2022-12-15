@@ -66,21 +66,6 @@
 			{/if}
 			<button type="submit">Go</button>
 		</form>
-
-		{#if $loginOrRegister === 'login'}
-			<blockquote>
-				“If my doctor told me I had only six minutes to live, I wouldn't brood. I'd type a little
-				faster.” <span>Isaac Asimov</span>
-			</blockquote>
-		{/if}
-
-		{#if $loginOrRegister === 'register'}
-			<blockquote>
-				“Writing is supposed to be difficult, agonizing, a dreadful exercise, a terrible
-				occupation.”
-				<span> Ray Bradbury</span>
-			</blockquote>
-		{/if}
 	</div>
 {/if}
 
