@@ -2,9 +2,7 @@ import { start_mongo } from './db/mongo.js';
 import { users } from './db/users';
 
 start_mongo()
-	.then(() => {
-		console.log('Mongo started');
-	})
+	.then(() => {})
 	.catch((err) => {
 		console.error(err);
 	});

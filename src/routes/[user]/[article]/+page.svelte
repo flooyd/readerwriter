@@ -1,6 +1,7 @@
 <script>
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
 	export let data;
 
@@ -10,7 +11,6 @@
 	let dirty = false;
 
 	onMount(() => {
-		console.log('hi');
 		setInterval(() => {
 			if (dirty) {
 				save();
@@ -25,6 +25,7 @@
 			data.article = JSON.parse(data.article);
 			preparedArticle = data.article;
 		}
+		console.log(data);
 	}
 
 	const getTimeStringFromUnix = (unix) => {
@@ -56,19 +57,22 @@
 		>
 			<div>{preparedArticle.title}</div>
 			<input type="hidden" name="article" value={JSON.stringify(preparedArticle)} />
-			<button formaction="?/save" bind:this={saveButton} type="submit">Save</button>
+			<button formaction="?/save" bind:this={saveButton} type="submit" style="display: none;"
+				>Save</button
+			>
 		</form>
 	</div>
 	<div class="subtitle">
-		An article by blah <span
-			>- Last updated on {getTimeStringFromUnix(preparedArticle.updatedAt)}</span
-		>
+		An article by {preparedArticle.author}
+		<span>- Last updated on {getTimeStringFromUnix(preparedArticle.updatedAt)}</span>
 	</div>
-	<textarea
-		bind:this={textArea}
-		bind:value={preparedArticle.content}
-		on:input={() => handleTextAreaInput()}
-	/>
+	{#if $page.data.auth && $page.data.username === data.user}
+		<textarea
+			bind:this={textArea}
+			bind:value={preparedArticle.content}
+			on:input={() => handleTextAreaInput()}
+		/>
+	{/if}
 
 	<div class="content">{preparedArticle.content}</div>
 </div>

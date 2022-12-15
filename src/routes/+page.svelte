@@ -15,7 +15,10 @@
 			Welcome to Read and Write{$page.data.username ? ', ' + $page.data.username + '.' : '.'}
 		</div>
 		<div class="description" in:fade={{ duration: 300 }}>A blogging and storytelling site</div>
-		<div in:fade={{ duration: 300 }} class="more">Featured Articles coming soon.</div>
+		<div in:fade={{ duration: 300 }} class="featured">
+			<div>Featured Articles</div>
+			<a href="/Floyd/Baby's%20First%20Blog%20Post">Baby's First Blog Post by Floyd</a>
+		</div>
 	</div>
 {/if}
 
@@ -46,32 +49,28 @@
 		font-family: 'Lobster', cursive;
 	}
 
-	.more {
+	.featured {
 		font-size: 31px;
 		display: flex;
 		gap: 13px;
 		flex-direction: column;
-	}
-
-	button {
-		width: fit-content;
-		font-size: 48px;
-		padding: 4px 8px;
-		background: lightcoral;
-		font-family: 'Lobster', cursive;
-	}
-
-	blockquote {
-		margin-top: 20px;
-		font-size: 31px;
-		font-style: italic;
-		margin-bottom: 20px;
-	}
-
-	blockquote span {
-		font-style: normal;
-		color: lightcoral;
 		font-weight: bold;
-		margin-left: 13px;
+	}
+
+	.featured div {
+		border-bottom: 2px solid black;
+		width: fit-content;
+		padding-bottom: 8px;
+		margin-bottom: 17px;
+	}
+
+	a {
+		color: black;
+		font-size: 20px;
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: lightcoral;
 	}
 </style>

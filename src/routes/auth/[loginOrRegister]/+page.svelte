@@ -12,7 +12,6 @@
 		password = '';
 
 	$: data ? ($loginOrRegister = data.loginOrRegister) : null;
-	$: console.log(form);
 </script>
 
 {#if $loginOrRegister}

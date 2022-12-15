@@ -1,5 +1,6 @@
 <script>
 	import { fade, fly } from 'svelte/transition';
+	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -30,7 +31,6 @@
 	};
 
 	const sortByUpdatedAt = (asc) => {
-		console.log('sort');
 		preparedArticles = preparedArticles.sort((a, b) => {
 			if (a.updatedAt < b.updatedAt) {
 				return 1;
@@ -53,6 +53,7 @@
 	};
 
 	console.log(data);
+	console.log($page.data);
 </script>
 
 <div class="dashboard" in:fade={{ duration: 100 }}>
@@ -60,12 +61,14 @@
 		{data.user}'s Articles ({data.articles.length})
 		<input type="text" name="filter" bind:value={filter} on:input={filterArticles} />
 	</div>
-	<form use:enhance method="POST">
-		<div class="create">
-			<input type="hidden" name="articlesLength" value={data.articles.length} />
-			<button formaction="?/createArticle" class="createButton"> New Article </button>
-		</div>
-	</form>
+	{#if $page.data.auth && $page?.data.username === data.user}
+		<form use:enhance method="POST">
+			<div class="create">
+				<input type="hidden" name="articlesLength" value={data.articles.length} />
+				<button formaction="?/createArticle" class="createButton">New Article</button>
+			</div>
+		</form>
+	{/if}
 	{#if ready}
 		<div class="articles">
 			{#each preparedArticles as article (article._id)}
@@ -81,14 +84,16 @@
 						<div>
 							{article.title}
 						</div>
-						<div class="articleOptions">
-							<button class="editbutton" formaction="?/editArticle">
-								<i class="fa-solid fa-pen-to-square" />
-							</button>
-							<button class="deleteButton" formaction="?/deleteArticle">
-								<i class="fa-solid fa-trash" />
-							</button>
-						</div>
+						{#if $page.data?.auth && $page.data?.username === data.user}
+							<div class="articleOptions">
+								<button class="editbutton" formaction="?/editArticle">
+									<i class="fa-solid fa-pen-to-square" />
+								</button>
+								<button class="deleteButton" formaction="?/deleteArticle">
+									<i class="fa-solid fa-trash" />
+								</button>
+							</div>
+						{/if}
 					</div>
 					<div class="updated">Last Updated: {getTimeStringFromUnix(article.updatedAt)}</div>
 					<form use:enhance method="POST">
