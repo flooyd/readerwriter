@@ -21,7 +21,7 @@ export const actions = {
 	deleteArticle: async ({ request, locals }) => {
 		const formData = await request.formData();
 		const _id = formData.get('_id');
-		console.log('delete', _id);
+
 		try {
 			await articles.deleteOne({ _id: ObjectId(_id) });
 			return true;

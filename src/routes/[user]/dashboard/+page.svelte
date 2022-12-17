@@ -17,6 +17,7 @@
 	});
 
 	$: if (data) {
+		console.log('dat');
 		if (!JSON.parse(data.articles)) {
 		} else {
 			data.articles = JSON.parse(data.articles);
@@ -55,9 +56,6 @@
 		}
 		goto(`/${data.user}/${title}`);
 	};
-
-	console.log(data);
-	console.log($page.data);
 </script>
 
 <svelte:head>

@@ -147,6 +147,12 @@ button:hover {
 	cursor: pointer;
 }
 
+button:disabled:hover {
+	background: white;
+	color: #1010104d;
+	cursor: not-allowed;
+}
+
 html {
 	background: rgb(255, 255, 255);
 	background: linear-gradient(95deg, rgba(255, 255, 255, 1) 75%, rgba(14, 75, 60, 1) 100%);
