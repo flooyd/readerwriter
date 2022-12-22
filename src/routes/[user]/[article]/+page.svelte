@@ -1,307 +1,194 @@
 <script>
+	import './styles.scss';
+	import StarterKit from '@tiptap/starter-kit';
+	import Link from '@tiptap/extension-link';
+	import { Editor } from '@tiptap/core';
+	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { onMount, tick } from 'svelte';
-	import { page } from '$app/stores';
-	import { invalidate } from '$app/navigation';
-	import { fade } from 'svelte/transition';
-	import { editMode } from '../../../stores';
+	import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+	import { lowlight } from 'lowlight';
+	import js from 'highlight.js/lib/languages/javascript';
+
 	export let data;
 
-	let preparedArticle,
-		selection,
-		saveButton,
-		saveSelectionButton,
-		textArea = null;
+	let element;
+	let editor;
 	let dirty = false;
-	let selectionStart = 0;
-	let selectionEnd = 0;
-	let selections = [];
-	let processedSelections = [];
-	let existingSelection = null;
-	let editedContent = '';
-
-	String.prototype.splice = function (start, delCount, newSubStr) {
-		console.log('blah');
-		return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
-	};
+	let ready = false;
+	let saveButton = null;
 
 	onMount(() => {
 		setInterval(() => {
 			if (dirty) {
-				save();
+				saveButton.click();
 				dirty = false;
 			}
-		}, 2000);
+		}, 1500);
 
-		if (typeof data.article === 'string') {
-			data.article = JSON.parse(data.article);
-		}
-		if (typeof data.selections === 'string') {
-			selections = JSON.parse($page.data.selections);
-		}
+		data.article = JSON.parse(data.article);
 
-		preparedArticle = data.article;
-		editedContent = preparedArticle.content;
-		$editMode = true;
-		processSelections();
-		console.log(selections);
+		lowlight.registerLanguage('js', js);
+
+		editor = new Editor({
+			element: element,
+			extensions: [
+				StarterKit.configure({ codeBlock: false }),
+				Link.configure({ linkOnPaste: true }),
+				CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'js' })
+			],
+			content: data.article.content,
+			onUpdate: () => {
+				console.log(editor.getJSON());
+				editor = editor;
+				dirty = true;
+			}
+		});
+		console.log('save button', saveButton);
 	});
 
-	const getTimeStringFromUnix = (unix) => {
-		const date = new Date(unix).toLocaleDateString('en-US');
-		const time = new Date(unix).toLocaleTimeString('en-US');
-		return `${date} - ${time}`;
-	};
-
-	const handleTextAreaInput = (e) => {
-		console.log(e);
-		editedContent = e.target.innerText;
-		dirty = true;
-	};
-
-	const save = () => {
-		saveButton.click();
-	};
-
-	const handleTextAreaSelection = async (e) => {
-		e.stopPropagation();
-		const { anchorOffset, focusOffset } = window.getSelection();
-		selectionStart = anchorOffset;
-		selectionEnd = focusOffset;
-		while (
-			preparedArticle.content[selectionStart] === ' ' ||
-			preparedArticle.content[selectionStart] === '\\n'
-		) {
-			selectionStart++;
-		}
-
-		while (
-			preparedArticle.content[selectionEnd] === ' ' ||
-			preparedArticle.content[selectionEnd] === '\\n'
-		) {
-			selectionEnd--;
-		}
-
-		existingSelection = selections.find(
-			(s) => s.selectionStart === selectionStart && s.selectionEnd === selectionEnd
-		);
-
-		if (existingSelection) {
-			console.log('existing selection');
-			return;
-		}
-
-		selection = { selectionStart, selectionEnd };
-	};
-
-	const updateStyle = async (property, value) => {
-		if (!selection.style) selection.style = {};
-		selection = {
-			...selection,
-			style: { ...selection.style, [property]: value }
-		};
-		await tick();
-		selections = [...selections, selection];
-		processSelections();
-		await tick();
-		saveSelectionButton.click();
-	};
-
-	const processSelections = () => {
-		processedSelections = selections.map((s) => {
-			return {
-				...s,
-				styleStr: () => {
-					let str = '';
-					Object.keys(s.style).forEach((k) => {
-						str += k + ':' + s.style[k] + ';';
-					});
-					return str;
-				},
-				text: preparedArticle.content.substring(s.selectionStart, s.selectionEnd)
-			};
-		});
-	};
-
-	const clearSelection = async () => {
-		selection = null;
-		existingSelection = null;
-		selectionStart = 0;
-		selectionEnd = 0;
-	};
-
-	//new lines are wonky so handling them manually
-	const handleEnter = (e) => {
-		return;
-		if (e.which == 13) {
-			e.stopPropagation();
-			e.preventDefault();
-			console.log('hi');
-			const cursorLocation = window.getSelection();
-			if (cursorLocation.anchorOffset !== cursorLocation.focusOffset) {
-				console.log('..');
-				return;
-			}
-			editedContent = editedContent.splice(cursorLocation.focusOffset + 1, 0, '\\n');
-			console.log(editedContent);
-		}
-	};
+	$: saveButton ? (ready = true) : null;
 </script>
 
-<svelte:head>
-	<title>Read and Write - {preparedArticle?.title}</title>
-	<meta name="description" content={`Read and Write - ${preparedArticle?.title}`} />
-</svelte:head>
-
-{#if preparedArticle}
-	<div in:fade={{ duration: 300 }} class="article">
-		<div class="title">
-			<form
-				use:enhance={() => {
-					return async () => {
-						textArea.focus();
-					};
-				}}
-				method="POST"
+{#if editor}
+	<div class="editorToolbar">
+		<div>
+			<button
+				on:click={() => editor.chain().focus().toggleBold().run()}
+				disabled={!editor.can().chain().focus().toggleBold().run()}
+				class={editor.isActive('bold') ? 'is-active' : ''}
 			>
-				<div>{preparedArticle.title}</div>
-				{#if $page.data.auth && $page.data.username === data.user}
-					<button class="editButton" type="button" on:click={() => ($editMode = !$editMode)}
-						>{$editMode ? 'Hide Editor' : 'Show Editor'}</button
-					>
-				{/if}
-
-				<input
-					type="hidden"
-					name="article"
-					value={JSON.stringify({ ...preparedArticle, content: editedContent })}
-				/>
-				<button formaction="?/save" bind:this={saveButton} type="submit">Save</button>
-			</form>
+				bold
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleItalic().run()}
+				disabled={!editor.can().chain().focus().toggleItalic().run()}
+				class={editor.isActive('italic') ? 'is-active' : ''}
+			>
+				italic
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleStrike().run()}
+				disabled={!editor.can().chain().focus().toggleStrike().run()}
+				class={editor.isActive('strike') ? 'is-active' : ''}
+			>
+				strike
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleCode().run()}
+				disabled={!editor.can().chain().focus().toggleCode().run()}
+				class={editor.isActive('code') ? 'is-active' : ''}
+			>
+				code
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+				class={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+			>
+				h1
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+				class={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+			>
+				h2
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+				class={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+			>
+				h3
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+				class={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}
+			>
+				h4
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
+				class={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}
+			>
+				h5
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
+				class={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
+			>
+				h6
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleBulletList().run()}
+				class={editor.isActive('bulletList') ? 'is-active' : ''}
+			>
+				bullet list
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleOrderedList().run()}
+				class={editor.isActive('orderedList') ? 'is-active' : ''}
+			>
+				ordered list
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleCodeBlock().run()}
+				class={editor.isActive('codeBlock') ? 'is-active' : ''}
+			>
+				code block
+			</button>
+			<button
+				on:click={() => editor.chain().focus().toggleBlockquote().run()}
+				class={editor.isActive('blockquote') ? 'is-active' : ''}
+			>
+				blockquote
+			</button>
+			<button on:click={() => editor.chain().focus().setHorizontalRule().run()}>
+				horizontal rule
+			</button>
+			<button on:click={() => editor.chain().focus().setHardBreak().run()}> hard break </button>
+			<button
+				on:click={() => editor.chain().focus().undo().run()}
+				disabled={!editor.can().chain().focus().undo().run()}
+			>
+				undo
+			</button>
+			<button
+				on:click={() => editor.chain().focus().redo().run()}
+				disabled={!editor.can().chain().focus().redo().run()}
+			>
+				redo
+			</button>
 		</div>
-		<div class="subtitle">
-			An article by {preparedArticle.author}
-			<span>- Last updated on {getTimeStringFromUnix(preparedArticle.updatedAt)}</span>
-		</div>
-		{#if $page.data.auth && $page.data.username === data.user && $editMode}
-			<div class="toolbar">
-				<button
-					disabled={!selection && !existingSelection}
-					style="font-weight: bold;"
-					class={existingSelection?.style['font-weight'] === 700 ? 'active' : ''}
-					on:click={() => {
-						updateStyle('font-weight', existingSelection?.style['font-weight'] === 700 ? 400 : 700);
-					}}>b</button
-				>
-			</div>
-			<form use:enhance method="POST">
-				<input type="hidden" name="article" value={JSON.stringify(preparedArticle)} />
-				<input type="hidden" name="selection" value={JSON.stringify(selection)} />
-				<button
-					formaction="?/saveSelection"
-					bind:this={saveSelectionButton}
-					type="submit"
-					style="display: none;">Save Selection</button
-				>
-			</form>
-		{/if}
-		<div
-			class="content"
-			on:keydown={(e) => handleEnter(e)}
-			bind:this={textArea}
-			contenteditable="true"
-			on:input={(e) => handleTextAreaInput(e)}
-			on:mousedown={() => {
-				clearSelection();
-			}}
-			on:mouseup={(e) => handleTextAreaSelection(e)}
-		>
-			{`${preparedArticle.content}`}
-		</div>
-		{#if processedSelections.length > 0}
-			<div class="selections">
-				{#each processedSelections as selection}
-					<div style={selection.styleStr()}>{selection.text}</div>
-				{/each}
-			</div>
-		{/if}
 	</div>
 {/if}
 
+<div bind:this={element} />
+
+<form
+	style="display: none;"
+	method="POST"
+	use:enhance={() => {
+		return async () => {
+			editor.commands.focus();
+		};
+	}}
+>
+	<input value={JSON.stringify({ ...data.article, content: editor?.getHTML() })} name="article" />
+	<button bind:this={saveButton} type="submit" formaction="?/save">Save</button>
+</form>
+
 <style>
-	.toolbar {
-		border: 1px solid black;
-		padding: 5px 13px;
-		width: 100%;
+	.editorToolbar {
 		margin-top: 20px;
-		background: white;
+		margin-left: 20px;
+		border: 3px solid black;
+		border-radius: 5px;
+		padding: 0px 8px;
+		padding-bottom: 8px;
+		width: calc(100% - 40px);
 	}
-
-	.active {
-		background: rgba(14, 75, 60, 1);
-		color: white;
+	.editorToolbar button {
+		margin-top: 8px;
 	}
-	.article {
-		padding: 20px;
-		margin: 20px 0px;
-	}
-
-	.title {
-		font-family: 'Lobster', cursive;
-		font-size: 31px;
-		color: lightcoral;
-		font-weight: bold;
-	}
-
-	.title form div {
-		width: fit-content;
-		margin-right: 13px;
-	}
-
-	.title form {
-		display: flex;
-	}
-
-	.subtitle {
-		font-size: 16px;
-		margin-top: 13px;
-		font-style: italic;
-		padding-bottom: 13px;
-		width: 100%;
-		border-bottom: 2px solid black;
-	}
-
-	.subtitle span {
-		font-style: normal;
-	}
-
-	.content {
-		margin-top: 20px;
-		width: 100%;
-		line-height: 1.25;
-		color: black;
-		white-space: pre-wrap;
-	}
-
-	[contenteditable] {
-		outline: 0px solid transparent;
-	}
-
-	.selections {
-		border: 1px solid black;
-		margin-top: 20px;
-	}
-
-	::selection {
-		background-color: lightcoral;
-		font-weight: bold;
-	}
-
-	.editButton {
-		margin-right: 13px;
-	}
-
-	.editButton:hover {
-		background: #0e4b3c;
+	.is-active {
+		background: lightcoral;
 	}
 </style>
