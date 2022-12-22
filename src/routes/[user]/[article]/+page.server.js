@@ -19,15 +19,29 @@ export const load = async ({ params }) => {
 export const actions = {
 	save: async ({ request, locals }) => {
 		const formData = await request.formData();
-		console.log(formData);
 		const article = JSON.parse(formData.get('article'));
 		console.log(article);
 		if (locals.user.username !== article.author) {
+			console.log('blahaaa');
 			return;
 		}
-		await articles.updateOne(
+		const result = await articles.updateOne(
 			{ _id: ObjectId(article._id) },
-			{ $set: { content: article.content, updatedAt: Date.now(), title: article.title } }
+			{ $set: { content: article.content, updatedAt: Date.now() } }
 		);
+
+		console.log(result);
+	},
+	saveTitle: async ({ request, locals, params }) => {
+		const formData = await request.formData();
+		const article = JSON.parse(formData.get('article'));
+		if (locals.user.username !== params.user) {
+			return;
+		}
+		const result = await articles.updateOne(
+			{ _id: ObjectId(article._id) },
+			{ $set: { title: article.title, updatedAt: Date.now() } }
+		);
+		console.log(result);
 	}
 };

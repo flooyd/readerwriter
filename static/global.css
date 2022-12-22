@@ -41,8 +41,8 @@ button:disabled:hover {
 }
 
 html {
-	background: rgb(255, 255, 255);
-	background: linear-gradient(95deg, rgba(255, 255, 255, 1) 75%, rgba(14, 75, 60, 1) 100%);
+	/* background: rgb(255, 255, 255);
+	background: linear-gradient(95deg, rgba(255, 255, 255, 1) 75%, rgba(14, 75, 60, 1) 100%); */
 }
 .ProseMirror {
 	margin-top: 20px;
