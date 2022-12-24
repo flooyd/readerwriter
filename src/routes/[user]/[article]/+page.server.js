@@ -22,15 +22,12 @@ export const actions = {
 		const article = JSON.parse(formData.get('article'));
 		console.log(article);
 		if (locals.user.username !== article.author) {
-			console.log('blahaaa');
 			return;
 		}
 		const result = await articles.updateOne(
 			{ _id: ObjectId(article._id) },
 			{ $set: { content: article.content, updatedAt: Date.now() } }
 		);
-
-		console.log(result);
 	},
 	saveTitle: async ({ request, locals, params }) => {
 		const formData = await request.formData();
@@ -42,6 +39,5 @@ export const actions = {
 			{ _id: ObjectId(article._id) },
 			{ $set: { title: article.title, updatedAt: Date.now() } }
 		);
-		console.log(result);
 	}
 };
