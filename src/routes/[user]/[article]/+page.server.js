@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { ObjectId } from 'mongodb';
 import { articles } from '../../../db/articles.js';
-import { selections } from '../../../db/selections.js';
 
 export const load = async ({ params }) => {
 	console.log('LOAD');
