@@ -18,7 +18,12 @@
 	<title>Read and Write Auth</title>
 	<meta name="description" content="The auth page for Read and Write" />
 </svelte:head>
-{#if $loginOrRegister}
+<div class="comingSoon">
+	<span><img src="../kappa.webp" alt="Kappa" /></span><span style="color: lightcoral">Y</span>ou
+	can't register quite yet. For now this is for my use only!
+	<span><img src="../kappa.webp" alt="Kappa" /></span>
+</div>
+{#if $loginOrRegister && data.blah}
 	<div class="auth" in:fade={{ duration: 300 }}>
 		<div class="title">
 			{$loginOrRegister === 'login' ? 'Login' : 'Register'}
@@ -73,6 +78,26 @@
 {/if}
 
 <style>
+	.comingSoon {
+		margin: 40px auto;
+		font-size: 31px;
+		display: flex;
+		align-items: center;
+		width: fit-content;
+		border: 3px solid black;
+		padding: 8px;
+		border-radius: 5px;
+		background: #eee;
+		box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+		user-select: none;
+	}
+	.comingSoon img {
+		height: 62px;
+	}
+	.comingSoon:hover {
+		color: white;
+		background: #333;
+	}
 	.auth {
 		margin: 40px 0px;
 		padding: 0px 20px;

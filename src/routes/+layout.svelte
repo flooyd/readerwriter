@@ -53,6 +53,7 @@
 		margin: 0px;
 		padding: 8px 20px;
 		height: fit-content;
+		box-shadow: 0px 5px 5px 0px rgba(14, 75, 60, 0.75);
 	}
 
 	nav div {

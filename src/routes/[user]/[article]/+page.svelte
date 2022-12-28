@@ -738,9 +738,6 @@
 	.viewer {
 		padding: 20px;
 	}
-	.my-custom-class {
-		background: red;
-	}
 	.toolbar {
 		display: flex;
 		flex-direction: column;
