@@ -1,6 +1,7 @@
 <script>
 	import './styles.scss';
 	import StarterKit from '@tiptap/starter-kit';
+	import Paragraph from '@tiptap/extension-paragraph';
 	import Link from '@tiptap/extension-link';
 	import Color from '@tiptap/extension-color';
 	import FontFamily from '@tiptap/extension-font-family';
@@ -32,7 +33,7 @@
 		Height,
 		Width
 	} from '../../../tiptap/Content';
-	import { Editor } from '@tiptap/core';
+	import { Editor, generateHTML } from '@tiptap/core';
 	import { onMount, tick } from 'svelte';
 	import { enhance } from '$app/forms';
 	import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
@@ -92,7 +93,12 @@
 		editor = new Editor({
 			element: element,
 			extensions: [
-				StarterKit.configure({ codeBlock: false, strike: false, TextStyle: false }),
+				StarterKit.configure({
+					codeBlock: false,
+					strike: false,
+					TextStyle: false,
+					paragraph: false
+				}),
 				Link.configure({
 					linkOnPaste: true,
 					autolink: true,
@@ -100,6 +106,11 @@
 				}),
 				CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'js' }),
 				TextStyle,
+				Paragraph.configure({
+					HTMLAttributes: {
+						class: 'my-custom-class'
+					}
+				}),
 				FontSize.configure({
 					types: ['textStyle']
 				}),
@@ -192,6 +203,7 @@
 				setCanBeMarkedAsTemplateVariable();
 			}
 		});
+		console.log(editor.view.dom.innerHTML);
 	};
 
 	const getSelectedText = () => {
@@ -296,7 +308,7 @@
 	};
 </script>
 
-{#if editor}
+{#if editor && data.username === data.user}
 	<div class="toolbar">
 		<form
 			method="POST"
@@ -686,21 +698,22 @@
 		</div>
 	</div>
 {/if}
+{#if data.username === data.user}
+	<div
+		bind:this={element}
+		on:click={() => {
+			options = null;
+			fontSizeValue = '16px';
+		}}
+		on:keydown={() => {
+			options = null;
+			fontSizeValue = '16px';
+		}}
+		on:mouseup={async () => {}}
+	/>
+{/if}
 
-<div
-	bind:this={element}
-	on:click={() => {
-		options = null;
-		fontSizeValue = '16px';
-	}}
-	on:keydown={() => {
-		options = null;
-		fontSizeValue = '16px';
-	}}
-	on:mouseup={async () => {}}
-/>
-
-{#if editor}
+{#if editor && data.username === data.user}
 	<form
 		style="display: none;"
 		method="POST"
@@ -715,7 +728,19 @@
 	</form>
 {/if}
 
+{#if editor && !(data.username === data.user)}
+	<div class="viewer">
+		{@html editor.view.dom.innerHTML}
+	</div>
+{/if}
+
 <style>
+	.viewer {
+		padding: 20px;
+	}
+	.my-custom-class {
+		background: red;
+	}
 	.toolbar {
 		display: flex;
 		flex-direction: column;
