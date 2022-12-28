@@ -47,6 +47,10 @@ html {
 .ProseMirror {
 	padding: 8px;
 }
+
+.ProseMirror * {
+	box-sizing: content-box;
+}
 .ProseMirror:focus {
 	outline: none;
 }
@@ -55,10 +59,8 @@ strong {
 	height: 74px;
 }
 span {
-	display: inline-block;
-	/* height: 100px;
 	display: inline-flex;
-	align-items: center; */
+	align-items: center;
 }
 
 em {

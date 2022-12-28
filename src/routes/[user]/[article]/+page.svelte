@@ -20,7 +20,17 @@
 		BorderBottomColor,
 		BorderLeftWidth,
 		BorderLeftStyle,
-		BorderLeftColor
+		BorderLeftColor,
+		PaddingTop,
+		PaddingRight,
+		PaddingBottom,
+		PaddingLeft,
+		MarginTop,
+		MarginRight,
+		MarginBottom,
+		MarginLeft,
+		Height,
+		Width
 	} from '../../../tiptap/Content';
 	import { Editor } from '@tiptap/core';
 	import { onMount, tick } from 'svelte';
@@ -82,7 +92,7 @@
 		editor = new Editor({
 			element: element,
 			extensions: [
-				StarterKit.configure({ codeBlock: false, strike: false }),
+				StarterKit.configure({ codeBlock: false, strike: false, TextStyle: false }),
 				Link.configure({
 					linkOnPaste: true,
 					autolink: true,
@@ -139,6 +149,36 @@
 					types: ['textStyle']
 				}),
 				BackgroundColor.configure({
+					types: ['textStyle']
+				}),
+				PaddingTop.configure({
+					types: ['textStyle']
+				}),
+				PaddingRight.configure({
+					types: ['textStyle']
+				}),
+				PaddingBottom.configure({
+					types: ['textStyle']
+				}),
+				PaddingLeft.configure({
+					types: ['textStyle']
+				}),
+				MarginTop.configure({
+					types: ['textStyle']
+				}),
+				MarginRight.configure({
+					types: ['textStyle']
+				}),
+				MarginBottom.configure({
+					types: ['textStyle']
+				}),
+				MarginLeft.configure({
+					types: ['textStyle']
+				}),
+				Height.configure({
+					types: ['textStyle']
+				}),
+				Width.configure({
 					types: ['textStyle']
 				})
 			],
@@ -445,37 +485,198 @@
 							</div> -->
 						</div>
 						<div class="option">
-							<label for="background">Border</label>
+							<label for="background">Border-Top</label>
 							<button
 								on:click={() => {
 									editor.chain().focus().setMark('textStyle', { borderTopWidth: '3px' }).run();
 									editor.chain().focus().setMark('textStyle', { borderTopStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderTopColor: 'red' }).run();
-									editor.chain().focus().setMark('textStyle', { borderRightWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderRightStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderRightColor: 'red' }).run();
-									editor.chain().focus().setMark('textStyle', { borderBottomWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderBottomStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderBottomColor: 'red' }).run();
-									editor.chain().focus().setMark('textStyle', { borderLeftWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderLeftStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderLeftColor: 'red' }).run();
-								}}>1px solid black</button
+									editor.chain().focus().setMark('textStyle', { borderTopColor: 'black' }).run();
+								}}>3px solid black</button
 							>
 							<button
 								on:click={() => {
 									editor.chain().focus().unsetBorderTopWidth().run();
 									editor.chain().focus().unsetBorderTopStyle().run();
 									editor.chain().focus().unsetBorderTopColor().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Border-Right</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { borderRightWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderRightStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderRightColor: 'black' }).run();
+								}}>3px solid black</button
+							>
+							<button
+								on:click={() => {
 									editor.chain().focus().unsetBorderRightWidth().run();
 									editor.chain().focus().unsetBorderRightStyle().run();
 									editor.chain().focus().unsetBorderRightColor().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Border-Bottom</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { borderBottomWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderBottomStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderBottomColor: 'black' }).run();
+								}}>3px solid black</button
+							>
+							<button
+								on:click={() => {
 									editor.chain().focus().unsetBorderBottomWidth().run();
 									editor.chain().focus().unsetBorderBottomStyle().run();
 									editor.chain().focus().unsetBorderBottomColor().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Border-Left</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { borderLeftWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderLeftStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderLeftColor: 'black' }).run();
+								}}>3px solid black</button
+							>
+							<button
+								on:click={() => {
 									editor.chain().focus().unsetBorderLeftWidth().run();
 									editor.chain().focus().unsetBorderLeftStyle().run();
 									editor.chain().focus().unsetBorderLeftColor().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Margin-Top</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { marginTop: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetMarginTop().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Margin-Right</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { marginRight: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetMarginRight().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Margin-Bottom</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { marginBottom: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetMarginBottom().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Margin-Left</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { marginLeft: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetMarginLeft().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Padding-Top</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { paddingTop: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetPaddingTop().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Padding-Right</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { paddingRight: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetPaddingRight().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Padding-Bottom</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { paddingBottom: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetPaddingBottom().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Padding-Left</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { paddingLeft: '3px' }).run();
+								}}>3px</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetPaddingLeft().run();
+								}}>none</button
+							>
+						</div>
+						<div class="option">
+							<label for="background">Height</label>
+							<button
+								on:click={() => {
+									console.log(fontSizeValue);
+									editor
+										.chain()
+										.focus()
+										.setMark('textStyle', { height: parseInt(fontSizeValue) + 'px' })
+										.run();
+								}}>{fontSizeValue}</button
+							>
+							<button
+								on:click={() => {
+									console.log(fontSizeValue);
+									editor.chain().focus().setMark('textStyle', { height: 'fit-content' }).run();
+								}}>fit-content</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetHeight().run();
 								}}>none</button
 							>
 						</div>
@@ -524,6 +725,7 @@
 	}
 	.toolbar .titleForm {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 8px;
 		align-items: center;
 		width: fit-content;
@@ -538,6 +740,7 @@
 		padding-bottom: 8px;
 		width: fit-content;
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		position: relative;
 	}

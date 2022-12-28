@@ -11,7 +11,17 @@ import {
 	BorderBottomColor,
 	BorderLeftWidth,
 	BorderLeftStyle,
-	BorderLeftColor
+	BorderLeftColor,
+	PaddingTop,
+	PaddingRight,
+	PaddingBottom,
+	PaddingLeft,
+	MarginTop,
+	MarginRight,
+	MarginBottom,
+	MarginLeft,
+	Height,
+	Width
 } from './content';
 
 export * from './content';
@@ -29,5 +39,15 @@ export default {
 	BorderBottomColor,
 	BorderLeftWidth,
 	BorderLeftStyle,
-	BorderLeftColor
+	BorderLeftColor,
+	PaddingTop,
+	PaddingRight,
+	PaddingBottom,
+	PaddingLeft,
+	MarginTop,
+	MarginRight,
+	MarginBottom,
+	MarginLeft,
+	Height,
+	Width
 };

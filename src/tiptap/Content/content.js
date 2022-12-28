@@ -547,7 +547,437 @@ export const BorderLeftStyle = Extension.create({
 });
 //#endregion
 //#endregion
+//#region PADDING
+//#region PADDING-TOP
+export const PaddingTop = Extension.create({
+	name: 'paddingTop',
 
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					paddingTop: {
+						default: null,
+						parseHTML: (element) => element.style.paddingTop?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.paddingTop) {
+								return {};
+							}
+
+							return {
+								style: `padding-top: ${attributes.paddingTop}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetPaddingTop:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { paddingTop: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region PADDING-RIGHT
+export const PaddingRight = Extension.create({
+	name: 'paddingRight',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					paddingRight: {
+						default: null,
+						parseHTML: (element) => element.style.paddingRight?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.paddingRight) {
+								return {};
+							}
+
+							return {
+								style: `padding-right: ${attributes.paddingRight}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetPaddingRight:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { paddingRight: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region PADDING-BOTTOM
+export const PaddingBottom = Extension.create({
+	name: 'paddingBottom',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					paddingBottom: {
+						default: null,
+						parseHTML: (element) => element.style.paddingBottom?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.paddingBottom) {
+								return {};
+							}
+
+							return {
+								style: `padding-bottom: ${attributes.paddingBottom}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetPaddingBottom:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { paddingBottom: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region PADDING-LEFT
+export const PaddingLeft = Extension.create({
+	name: 'paddingLeft',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					paddingLeft: {
+						default: null,
+						parseHTML: (element) => element.style.paddingLeft?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.paddingLeft) {
+								return {};
+							}
+
+							return {
+								style: `padding-left: ${attributes.paddingLeft}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetPaddingLeft:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { paddingLeft: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#endregion
+//#region MARGIN
+//#region MARGIN-TOP
+export const MarginTop = Extension.create({
+	name: 'marginTop',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					marginTop: {
+						default: null,
+						parseHTML: (element) => element.style.marginTop?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.marginTop) {
+								return {};
+							}
+
+							return {
+								style: `margin-top: ${attributes.marginTop}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetMarginTop:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { marginTop: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region MARGIN-RIGHT
+export const MarginRight = Extension.create({
+	name: 'marginRight',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					marginRight: {
+						default: null,
+						parseHTML: (element) => element.style.marginRight?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.marginRight) {
+								return {};
+							}
+
+							return {
+								style: `margin-right: ${attributes.marginRight}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetMarginRight:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { marginRight: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region MARGIN-BOTTOM
+export const MarginBottom = Extension.create({
+	name: 'marginBottom',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					marginBottom: {
+						default: null,
+						parseHTML: (element) => element.style.marginBottom?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.marginBottom) {
+								return {};
+							}
+
+							return {
+								style: `margin-bottom: ${attributes.marginBottom}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetMarginBottom:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { marginBottom: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#region MARGIN-LEFT
+export const MarginLeft = Extension.create({
+	name: 'marginLeft',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					marginLeft: {
+						default: null,
+						parseHTML: (element) => element.style.marginLeft?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.marginLeft) {
+								return {};
+							}
+
+							return {
+								style: `margin-left: ${attributes.marginLeft}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetMarginLeft:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { marginLeft: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+//#endregion
+//#endregion
+//#region DIMENSIONS
+export const Height = Extension.create({
+	name: 'height',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					height: {
+						default: null,
+						parseHTML: (element) => element.style.height?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.height) {
+								return {};
+							}
+
+							return {
+								style: `height: ${attributes.height}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetHeight:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { height: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
+export const Width = Extension.create({
+	name: 'width',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					width: {
+						default: null,
+						parseHTML: (element) => element.style.width?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.width) {
+								return {};
+							}
+
+							return {
+								style: `width: ${attributes.width}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetWidth:
+				() =>
+				({ chain }) => {
+					return chain().setMark('textStyle', { width: null }).removeEmptyTextStyle().run();
+				}
+		};
+	}
+});
 export const BackgroundColor = Extension.create({
 	name: 'backgroundColor',
 
