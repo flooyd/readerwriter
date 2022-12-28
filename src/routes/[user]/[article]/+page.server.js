@@ -18,6 +18,7 @@ export const load = async ({ params }) => {
 /** @type {import('./$types').Actions} */
 export const actions = {
 	save: async ({ request, locals }) => {
+		console.log('save');
 		const formData = await request.formData();
 		const article = JSON.parse(formData.get('article'));
 		console.log(article);

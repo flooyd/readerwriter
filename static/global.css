@@ -45,18 +45,22 @@ html {
 	background: linear-gradient(95deg, rgba(255, 255, 255, 1) 75%, rgba(14, 75, 60, 1) 100%); */
 }
 .ProseMirror {
-	margin-top: 20px;
-	margin-left: 20px;
-	width: calc(100% - 40px);
 	padding: 8px;
-	line-height: 1.5;
 }
 .ProseMirror:focus {
 	outline: none;
 }
 strong {
 	font-weight: bold;
+	height: 74px;
 }
+span {
+	display: inline-block;
+	/* height: 100px;
+	display: inline-flex;
+	align-items: center; */
+}
+
 em {
 	font-style: italic;
 }
@@ -64,6 +68,7 @@ a {
 	cursor: pointer;
 	color: lightcoral;
 }
-*::selection {
-	background: lightcoral;
+p {
+	display: flex;
+	align-items: center;
 }

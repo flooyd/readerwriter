@@ -2,9 +2,26 @@
 	import './styles.scss';
 	import StarterKit from '@tiptap/starter-kit';
 	import Link from '@tiptap/extension-link';
-	import FontSize from '@tobiasafischer/tiptap-extension-font-size';
 	import Color from '@tiptap/extension-color';
-	import TextStyle from '@tiptap/extension-text-style';
+	import FontFamily from '@tiptap/extension-font-family';
+	import TextStyle from '../../../tiptap/text-style';
+	import FontSize from '../../../tiptap/font-size';
+	import TextDecoration from '../../../tiptap/text-decoration';
+	import {
+		BackgroundColor,
+		BorderTopWidth,
+		BorderTopStyle,
+		BorderTopColor,
+		BorderRightWidth,
+		BorderRightStyle,
+		BorderRightColor,
+		BorderBottomWidth,
+		BorderBottomStyle,
+		BorderBottomColor,
+		BorderLeftWidth,
+		BorderLeftStyle,
+		BorderLeftColor
+	} from '../../../tiptap/Content';
 	import { Editor } from '@tiptap/core';
 	import { onMount, tick } from 'svelte';
 	import { enhance } from '$app/forms';
@@ -19,7 +36,6 @@
 	let editor;
 	let titleEditor;
 	let dirty = false;
-	let titleDirty = false;
 	let saveButton = null;
 	let saveTitleButton = null;
 	let options = null;
@@ -28,20 +44,22 @@
 	let fontFamilyValue = '';
 	let fontColorValue = '';
 	let highlightValue = '';
+	let canBeMarkedAsTemplateVariable = false;
+	let templateVariableName = '';
+	let editorToolbarHeight = 0;
 
+	//line height and height and display: inline-block;
 	onMount(() => {
 		setInterval(() => {
 			if (dirty) {
 				saveButton.click();
 				dirty = false;
 			}
-			if (titleDirty) {
-				saveTitleButton.click();
-				titleDirty = false;
-			}
 		}, 1500);
 
-		data.article = JSON.parse(data.article);
+		if (typeof data.article !== 'object') {
+			data.article = JSON.parse(data.article);
+		}
 
 		lowlight.registerLanguage('js', js);
 
@@ -54,20 +72,73 @@
 		});
 	});
 
+	const handleTitleSave = () => {
+		let hrefSplit = window.location.href.split('/');
+		hrefSplit[hrefSplit.length - 1] = data.article.title;
+		window.location.href = hrefSplit.join('/');
+	};
+
 	const newEditor = () => {
 		editor = new Editor({
 			element: element,
 			extensions: [
-				StarterKit.configure({ codeBlock: false }),
+				StarterKit.configure({ codeBlock: false, strike: false }),
 				Link.configure({
 					linkOnPaste: true,
 					autolink: true,
 					protocols: ['ftp', 'mailto', 'http', 'https']
 				}),
 				CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'js' }),
-				FontSize,
 				TextStyle,
+				FontSize.configure({
+					types: ['textStyle']
+				}),
 				Color.configure({
+					types: ['textStyle']
+				}),
+				TextDecoration.configure({
+					types: ['textStyle']
+				}),
+				FontFamily.configure({
+					types: ['textStyle']
+				}),
+				BorderTopWidth.configure({
+					types: ['textStyle']
+				}),
+				BorderTopStyle.configure({
+					types: ['textStyle']
+				}),
+				BorderTopColor.configure({
+					types: ['textStyle']
+				}),
+				BorderRightWidth.configure({
+					types: ['textStyle']
+				}),
+				BorderRightStyle.configure({
+					types: ['textStyle']
+				}),
+				BorderRightColor.configure({
+					types: ['textStyle']
+				}),
+				BorderBottomWidth.configure({
+					types: ['textStyle']
+				}),
+				BorderBottomStyle.configure({
+					types: ['textStyle']
+				}),
+				BorderBottomColor.configure({
+					types: ['textStyle']
+				}),
+				BorderLeftWidth.configure({
+					types: ['textStyle']
+				}),
+				BorderLeftStyle.configure({
+					types: ['textStyle']
+				}),
+				BorderLeftColor.configure({
+					types: ['textStyle']
+				}),
+				BackgroundColor.configure({
 					types: ['textStyle']
 				})
 			],
@@ -78,7 +149,7 @@
 				dirty = true;
 			},
 			onSelectionUpdate: () => {
-				editor = editor;
+				setCanBeMarkedAsTemplateVariable();
 			}
 		});
 	};
@@ -88,7 +159,31 @@
 		const selection = state.selection;
 		const { from, to } = selection;
 		const text = state.doc.textBetween(from, to, ' ');
+		const sel = editor.view.state.selection;
+		editor.view.state.doc.nodesBetween(sel.from, sel.to, (node, start, parent, index) => {
+			console.log({ node, start });
+		});
 		return text;
+	};
+
+	const setCanBeMarkedAsTemplateVariable = () => {
+		const text = getSelectedText().trim();
+		if (
+			text.length >= 5 &&
+			text[0] === '{' &&
+			text[1] === '{' &&
+			text[text.length - 1] === '}' &&
+			text[text.length - 2] === '}'
+		) {
+			canBeMarkedAsTemplateVariable = true;
+			templateVariableName = text
+				.split('')
+				.filter((c) => c !== '{' && c !== '}')
+				.join('');
+			processTemplate();
+		} else {
+			canBeMarkedAsTemplateVariable = false;
+		}
 	};
 
 	const setLink = () => {
@@ -109,7 +204,16 @@
 		editor.chain().focus().setLink({ href: url }).run();
 	};
 
+	const processTemplate = () => {
+		const sel = editor.view.state.selection;
+		editor.view.state.doc.nodesBetween(sel.from, sel.to, (node, start, parent, index) => {
+			console.log({ node, start });
+		});
+	};
+
 	const setOptions = async () => {
+		// getSelectedText();
+		// processTemplate();
 		if (options === 'textStyle') {
 			const selection = editor.view.state.selection;
 			const anchorPos = selection.$anchor.pos;
@@ -129,7 +233,7 @@
 					if (parent.type.name !== 'doc') {
 						node.marks.forEach((mark, index) => {
 							if (mark.attrs.fontSize && node.text.length === selectionEnd - selectionStart) {
-								fontSizeValue = node.marks[index].attrs.fontSize;
+								fontSizeValue = parseInt(node.marks[index].attrs.fontSize);
 								existingFontSizeFound = true;
 							}
 							if (mark.attrs.fontSize) {
@@ -141,26 +245,26 @@
 					}
 				}
 			);
-			if (!existingFontSizeFound) fontSizeValue = largestSurrounding || '16px';
+			if (!existingFontSizeFound) {
+				if (largestSurrounding) {
+					fontSizeValue = largestSurrounding + 'px';
+				} else {
+					fontSizeValue = '16px';
+				}
+			}
 		}
 	};
-
-	$: editor ? console.log(editor.view.state.selection) : null;
-	$: options ? setOptions() : null;
 </script>
 
-<div bind:this={titleElement} style="display: none;" />
-<div>{editor ? getSelectedText() : null}</div>
 {#if editor}
 	<div class="toolbar">
 		<form
 			method="POST"
 			action="?/saveTitle"
 			class="titleForm"
-			use:enhance={async ({ form, data, action, cancel }) => {
-				console.log(data.get('article'));
+			use:enhance={() => {
 				return async () => {
-					editor.commands.focus();
+					handleTitleSave();
 				};
 			}}
 		>
@@ -168,12 +272,12 @@
 			<input bind:value={data.article.title} placeholder="title" name="articleTitle" />
 
 			<input style="display: none;" value={JSON.stringify({ ...data.article })} name="article" />
-			<button style="display: none;" bind:this={saveTitleButton} type="submit">Save</button>
+			<button bind:this={saveTitleButton} type="submit">Save</button>
 		</form>
-		<div class="editorToolbar">
+		<div class="editorToolbar" bind:offsetHeight={editorToolbarHeight}>
 			<div>
 				<button
-					on:click={() => editor.chain().focus().toggleBold().run()}
+					on:click={() => editor.chain().focus().setBold().run()}
 					disabled={!editor.can().chain().focus().toggleBold().run()}
 					class={editor.isActive('bold') ? 'is-active' : ''}
 				>
@@ -187,9 +291,11 @@
 					<i class="fa-solid fa-italic" />
 				</button>
 				<button
-					on:click={() => editor.chain().focus().toggleStrike().run()}
-					disabled={!editor.can().chain().focus().toggleStrike().run()}
-					class={editor.isActive('strike') ? 'is-active' : ''}
+					on:click={() => editor.chain().focus().setTextDecoration('line-through').run()}
+					disabled={false}
+					class={editor.isActive('textStyle', { textDecoration: 'line-through' })
+						? 'is-active'
+						: ''}
 				>
 					<i class="fa-solid fa-strikethrough" />
 				</button>
@@ -207,68 +313,33 @@
 				</button>
 				<button
 					on:click={() => {
-						options === 'textStyle' ? (options = null) : (options = 'textStyle');
+						if (options === 'textStyle') {
+							options = null;
+						} else {
+							options = 'textStyle';
+							setOptions();
+						}
 					}}
 					disabled={!editor.can().chain().focus().setColor().run()}
 					class={editor.isActive('textStyle') ? 'is-active' : ''}
 					><i class="fa-solid fa-font" /></button
 				>
-				<button
-					on:click={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-					class={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-heading" /><span class="headingNumber">2</span>
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-					class={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-heading" /><span class="headingNumber">3</span>
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
-					class={editor.isActive('heading', { level: 4 }) ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-heading" /> <span class="headingNumber">4</span>
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
-					class={editor.isActive('heading', { level: 5 }) ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-heading" /><span class="headingNumber">5</span>
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
-					class={editor.isActive('heading', { level: 6 }) ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-heading" /><span class="headingNumber">6</span>
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleBulletList().run()}
-					class={editor.isActive('bulletList') ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-list" />
-				</button>
-				<button
-					on:click={() => editor.chain().focus().toggleOrderedList().run()}
-					class={editor.isActive('orderedList') ? 'is-active' : ''}
-				>
-					<i class="fa-solid fa-list-ol" />
-				</button>
+
 				<button
 					on:click={() => editor.chain().focus().toggleCodeBlock().run()}
 					class={editor.isActive('codeBlock') ? 'is-active' : ''}
 				>
 					<i class="fa-regular fa-file-code" />
 				</button>
+				<button disabled={!canBeMarkedAsTemplateVariable}><i class="fa-solid fa-cube" /></button>
 				<button
-					on:click={() => editor.chain().focus().toggleBlockquote().run()}
-					class={editor.isActive('blockquote') ? 'is-active' : ''}
+					on:click={() => {
+						console.log(editor.view.state.selection);
+						editor.chain().focus().selectParentNode();
+						console.log(editor.view.state.selection);
+					}}
 				>
-					<i class="fa-solid fa-quote-left" />
-				</button>
-				<button on:click={() => editor.chain().focus().setHorizontalRule().run()}>
-					<i class="fa-solid fa-ruler-horizontal" />
+					<i class="fa-solid fa-person" />
 				</button>
 				<button
 					on:click={() => editor.chain().focus().undo().run()}
@@ -283,59 +354,136 @@
 					<i class="fa-solid fa-arrow-rotate-right" />
 				</button>
 			</div>
-		</div>
-	</div>
-	{#if options}
-		<div class="options">
-			{#if options === 'textStyle'}
-				<div class="option">
-					<label for="fontSize">Font Size</label>
-					<div>
-						<button
-							on:click={() => {
-								console.log('hi');
-								editor.chain().focus().setFontSize('16px').run();
-								fontSizeValue = '16px';
-							}}><i class="fa-solid fa-cancel" /></button
-						>
-						<button
-							on:click={() => {
-								fontSizeValue = parseInt(fontSizeValue) - 1 + 'px';
-								editor.chain().focus().setFontSize(fontSizeValue).run();
-							}}>-</button
-						>
-						<input bind:value={fontSizeValue} type="text" name="fontSize" />
-						<button
-							on:click={() => {
-								fontSizeValue = parseInt(fontSizeValue) + 1 + 'px';
-								editor.chain().focus().setFontSize(fontSizeValue).run();
-							}}>+</button
-						>
-					</div>
-				</div>
-				<div class="option">
-					<label for="fontColor">Font Color</label>
-					<div>
-						<button
-							on:click={() => {
-								console.log('hi');
-								editor.chain().focus().setColor('#000000').run();
-								fontColorValue = '#000000';
-							}}><i class="fa-solid fa-cancel" /></button
-						>
-						<input
-							on:input={(e) => {
-								fontColorValue = e.target.value;
-								editor.chain().focus().setColor(fontColorValue).run();
-							}}
-							bind:value={fontColorValue}
-							type="color"
-						/>
-					</div>
+			{#if options}
+				<div class="options" style={`top: ${editorToolbarHeight}px`}>
+					{#if options === 'textStyle'}
+						<div class="option">
+							<label for="fontSize">Font Size</label>
+							<div>
+								<button
+									on:click={() => {
+										editor.chain().focus().setMark('textStyle', { fontSize: '100px' }).run();
+										fontSizeValue = '16px';
+									}}><i class="fa-solid fa-cancel" /></button
+								>
+								<button
+									on:click={() => {
+										fontSizeValue = parseInt(fontSizeValue) - 1 + 'px';
+										editor.chain().focus().setMark('textStyle', { fontSize: fontSizeValue }).run();
+									}}>-</button
+								>
+								<input bind:value={fontSizeValue} type="text" name="fontSize" />
+								<button
+									on:click={() => {
+										fontSizeValue = parseInt(fontSizeValue) + 1 + 'px';
+										editor.chain().focus().setMark('textStyle', { fontSize: fontSizeValue }).run();
+									}}>+</button
+								>
+								<button
+									on:click={() => {
+										editor.chain().focus().setMark('textStyle', { fontFamily: 'serif' }).run();
+									}}>font family</button
+								>
+							</div>
+						</div>
+						<div class="option">
+							<label for="fontColor">Font Color</label>
+							<div>
+								<button
+									on:click={() => {
+										editor.chain().focus().setColor('#000000').run();
+										fontColorValue = '#000000';
+									}}><i class="fa-solid fa-cancel" /></button
+								>
+								<input
+									on:input={(e) => {
+										fontColorValue = e.target.value;
+										editor.chain().focus().setColor(fontColorValue).run();
+									}}
+									bind:value={fontColorValue}
+									type="color"
+								/>
+							</div>
+						</div>
+						<div class="option">
+							<label for="background">Background</label>
+							<button
+								on:click={() =>
+									editor.chain().focus().setMark('textStyle', { backgroundColor: '#333' }).run()}
+								>#333</button
+							>
+							<button
+								on:click={() =>
+									editor
+										.chain()
+										.focus()
+										.setMark('textStyle', { backgroundColor: 'lightcoral' })
+										.run()}>lightcoral</button
+							>
+							<button
+								on:click={() =>
+									editor
+										.chain()
+										.focus()
+										.setMark('textStyle', { backgroundColor: 'lightblue' })
+										.run()}>lightblue</button
+							>
+							<!-- <div>
+								<button
+									on:click={() => {
+										editor.chain().focus().setMark('textStyle', { background: 'lightgreen' }).run();
+									}}><i class="fa-solid fa-cancel" /></button
+								>
+								<input
+									on:input={(e) => {
+										fontColorValue = e.target.value;
+										editor.chain().focus().setColor(fontColorValue).run();
+									}}
+									bind:value={fontColorValue}
+									type="color"
+								/>
+							</div> -->
+						</div>
+						<div class="option">
+							<label for="background">Border</label>
+							<button
+								on:click={() => {
+									editor.chain().focus().setMark('textStyle', { borderTopWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderTopStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderTopColor: 'red' }).run();
+									editor.chain().focus().setMark('textStyle', { borderRightWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderRightStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderRightColor: 'red' }).run();
+									editor.chain().focus().setMark('textStyle', { borderBottomWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderBottomStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderBottomColor: 'red' }).run();
+									editor.chain().focus().setMark('textStyle', { borderLeftWidth: '3px' }).run();
+									editor.chain().focus().setMark('textStyle', { borderLeftStyle: 'solid' }).run();
+									editor.chain().focus().setMark('textStyle', { borderLeftColor: 'red' }).run();
+								}}>1px solid black</button
+							>
+							<button
+								on:click={() => {
+									editor.chain().focus().unsetBorderTopWidth().run();
+									editor.chain().focus().unsetBorderTopStyle().run();
+									editor.chain().focus().unsetBorderTopColor().run();
+									editor.chain().focus().unsetBorderRightWidth().run();
+									editor.chain().focus().unsetBorderRightStyle().run();
+									editor.chain().focus().unsetBorderRightColor().run();
+									editor.chain().focus().unsetBorderBottomWidth().run();
+									editor.chain().focus().unsetBorderBottomStyle().run();
+									editor.chain().focus().unsetBorderBottomColor().run();
+									editor.chain().focus().unsetBorderLeftWidth().run();
+									editor.chain().focus().unsetBorderLeftStyle().run();
+									editor.chain().focus().unsetBorderLeftColor().run();
+								}}>none</button
+							>
+						</div>
+					{/if}
 				</div>
 			{/if}
 		</div>
-	{/if}
+	</div>
 {/if}
 
 <div
@@ -348,6 +496,7 @@
 		options = null;
 		fontSizeValue = '16px';
 	}}
+	on:mouseup={async () => {}}
 />
 
 {#if editor}
@@ -369,11 +518,9 @@
 	.toolbar {
 		display: flex;
 		flex-direction: column;
-		margin-left: 20px;
 		gap: 13px;
-		margin-top: 20px;
 		flex-wrap: wrap;
-		margin-bottom: 20px;
+		margin: 20px;
 	}
 	.toolbar .titleForm {
 		display: flex;
@@ -392,6 +539,7 @@
 		width: fit-content;
 		display: flex;
 		justify-content: center;
+		position: relative;
 	}
 	.editorToolbar button {
 		margin-top: 8px;
@@ -399,27 +547,33 @@
 		display: inline-flex;
 		align-items: center;
 	}
-	button span {
-		margin-left: 4px;
-	}
+
 	.options {
-		margin-left: 20px;
 		width: fit-content;
 		padding: 8px;
 		border: 3px solid black;
-		margin-top: -15px;
 		border-radius: 5px;
 		display: flex;
 		flex-direction: column;
 		gap: 13px;
-		opacity: 0.5;
-		width: 300px;
+		min-width: 250px;
+		position: absolute;
+		background: white;
+		left: -3px;
+		opacity: 0.9;
+		z-index: 5;
 	}
 	.option {
 		display: flex;
 		gap: 8px;
 		justify-content: space-between;
 		align-items: center;
+	}
+	.options .option button {
+		margin: 0px;
+	}
+	.option label {
+		min-width: 100px;
 	}
 	.option div {
 		display: flex;
