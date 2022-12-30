@@ -441,60 +441,54 @@
 						<div class="option">
 							<label for="fontColor">Font Color</label>
 							<div>
-								<button
-									on:click={() => {
-										editor.chain().focus().setColor('#000000').run();
-										fontColorValue = '#000000';
-									}}><i class="fa-solid fa-cancel" /></button
-								>
-								<input
-									on:input={(e) => {
-										fontColorValue = e.target.value;
-										editor.chain().focus().setColor(fontColorValue).run();
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('color').value;
+										editor.chain().focus().setMark('textStyle', { color: formValue }).run();
 									}}
-									bind:value={fontColorValue}
-									type="color"
-								/>
+								>
+									<input type="color" name="color" />
+									<button>Apply</button>
+								</form>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('color').value;
+										editor.chain().focus().setMark('textStyle', { color: formValue }).run();
+									}}
+								>
+									<input type="text" name="color" />
+									<button>Apply</button>
+								</form>
 							</div>
 						</div>
 						<div class="option">
 							<label for="background">Background</label>
-							<button
-								on:click={() =>
-									editor.chain().focus().setMark('textStyle', { backgroundColor: '#333' }).run()}
-								>#333</button
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('backgroundColor').value;
+									editor.chain().focus().setMark('textStyle', { backgroundColor: formValue }).run();
+								}}
 							>
-							<button
-								on:click={() =>
-									editor
-										.chain()
-										.focus()
-										.setMark('textStyle', { backgroundColor: 'lightcoral' })
-										.run()}>lightcoral</button
+								<input type="color" name="backgroundColor" />
+								<button>Apply</button>
+							</form>
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('backgroundColor').value;
+									editor.chain().focus().setMark('textStyle', { backgroundColor: formValue }).run();
+								}}
 							>
-							<button
-								on:click={() =>
-									editor
-										.chain()
-										.focus()
-										.setMark('textStyle', { backgroundColor: 'lightblue' })
-										.run()}>lightblue</button
-							>
-							<!-- <div>
-								<button
-									on:click={() => {
-										editor.chain().focus().setMark('textStyle', { background: 'lightgreen' }).run();
-									}}><i class="fa-solid fa-cancel" /></button
-								>
-								<input
-									on:input={(e) => {
-										fontColorValue = e.target.value;
-										editor.chain().focus().setColor(fontColorValue).run();
-									}}
-									bind:value={fontColorValue}
-									type="color"
-								/>
-							</div> -->
+								<input type="text" name="backgroundColor" />
+								<button>Apply</button>
+							</form>
 						</div>
 						<div class="option">
 							<label for="background">Border-Top</label>
@@ -566,131 +560,159 @@
 						</div>
 						<div class="option">
 							<label for="background">Margin-Top</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { marginTop: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetMarginTop().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('marginTop').value;
+										editor.chain().focus().setMark('textStyle', { marginTop: formValue }).run();
+									}}
+								>
+									<input type="text" name="marginTop" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Margin-Right</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { marginRight: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetMarginRight().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('marginRight').value;
+										editor.chain().focus().setMark('textStyle', { marginRight: formValue }).run();
+									}}
+								>
+									<input type="text" name="marginRight" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Margin-Bottom</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { marginBottom: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetMarginBottom().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('marginBottom').value;
+										editor.chain().focus().setMark('textStyle', { marginBottom: formValue }).run();
+									}}
+								>
+									<input type="text" name="marginBottom" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Margin-Left</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { marginLeft: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetMarginLeft().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('marginLeft').value;
+										editor.chain().focus().setMark('textStyle', { marginLeft: formValue }).run();
+									}}
+								>
+									<input type="text" name="marginLeft" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Padding-Top</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { paddingTop: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetPaddingTop().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('paddingTop').value;
+										editor.chain().focus().setMark('textStyle', { paddingTop: formValue }).run();
+									}}
+								>
+									<input type="text" name="paddingTop" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Padding-Right</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { paddingRight: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetPaddingRight().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('paddingRight').value;
+										editor.chain().focus().setMark('textStyle', { paddingRight: formValue }).run();
+									}}
+								>
+									<input type="text" name="paddingRight" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Padding-Bottom</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { paddingBottom: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetPaddingBottom().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('paddingBottom').value;
+										editor.chain().focus().setMark('textStyle', { paddingBottom: formValue }).run();
+									}}
+								>
+									<input type="text" name="paddingBottom" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Padding-Left</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { paddingLeft: '3px' }).run();
-								}}>3px</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetPaddingLeft().run();
-								}}>none</button
-							>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('paddingLeft').value;
+										editor.chain().focus().setMark('textStyle', { paddingLeft: formValue }).run();
+									}}
+								>
+									<input type="text" name="paddingLeft" />
+									<button>Apply</button>
+								</form>
+							</div>
 						</div>
 						<div class="option">
 							<label for="background">Height</label>
-							<button
-								on:click={() => {
-									console.log(fontSizeValue);
-									editor
-										.chain()
-										.focus()
-										.setMark('textStyle', { height: parseInt(fontSizeValue) + 'px' })
-										.run();
-								}}>{fontSizeValue}</button
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('height').value;
+									editor.chain().focus().setMark('textStyle', { height: formValue }).run();
+								}}
 							>
-							<button
-								on:click={() => {
-									console.log(fontSizeValue);
-									editor.chain().focus().setMark('textStyle', { height: 'fit-content' }).run();
-								}}>fit-content</button
+								<input type="text" name="height" />
+								<button>Apply</button>
+							</form>
+						</div>
+						<div class="option">
+							<label for="background">Width</label>
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('width').value;
+									editor.chain().focus().setMark('textStyle', { width: formValue }).run();
+								}}
 							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetHeight().run();
-								}}>none</button
-							>
+								<input type="text" name="width" />
+								<button>Apply</button>
+							</form>
 						</div>
 					{/if}
 				</div>
@@ -793,6 +815,11 @@
 		gap: 8px;
 		justify-content: space-between;
 		align-items: center;
+	}
+	.inputForm {
+		display: flex;
+		margin-right: 13px;
+		gap: 8px;
 	}
 	.options .option button {
 		margin: 0px;

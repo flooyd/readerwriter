@@ -72,5 +72,5 @@ a {
 }
 p {
 	display: flex;
-	align-items: center;
+	align-items: top;
 }

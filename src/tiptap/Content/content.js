@@ -978,6 +978,53 @@ export const Width = Extension.create({
 		};
 	}
 });
+//#endregion
+//region BACKGROUND
+export const BackgroundImage = Extension.create({
+	name: 'backgroundImage',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					backgroundImage: {
+						default: null,
+						parseHTML: (element) => element.style.backgroundImage?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.backgroundImage) {
+								return {};
+							}
+
+							return {
+								style: `background-image: ${attributes.backgroundImage}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetBackgroundImage:
+				() =>
+				({ chain }) => {
+					return chain()
+						.setMark('textStyle', { backgroundImage: null })
+						.removeEmptyTextStyle()
+						.run();
+				}
+		};
+	}
+});
+
 export const BackgroundColor = Extension.create({
 	name: 'backgroundColor',
 

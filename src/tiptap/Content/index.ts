@@ -21,7 +21,8 @@ import {
 	MarginBottom,
 	MarginLeft,
 	Height,
-	Width
+	Width,
+	BackgroundImage
 } from './content';
 
 export * from './content';
@@ -49,5 +50,6 @@ export default {
 	MarginBottom,
 	MarginLeft,
 	Height,
-	Width
+	Width,
+	BackgroundImage
 };
