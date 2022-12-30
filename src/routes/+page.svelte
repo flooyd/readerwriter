@@ -29,7 +29,6 @@
 
 <style>
 	.home {
-		margin: 20px 0px;
 		display: flex;
 		flex-direction: column;
 		gap: 40px;
@@ -38,7 +37,8 @@
 		padding-right: 48px;
 	}
 	.title {
-		font-size: 39px;
+		font-size: 25px;
+		margin-top: 20px;
 		font-family: 'Lobster', cursive;
 		background: #eee;
 		box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);

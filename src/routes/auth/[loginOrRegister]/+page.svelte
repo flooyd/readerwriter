@@ -19,9 +19,11 @@
 	<meta name="description" content="The auth page for Read and Write" />
 </svelte:head>
 <div class="comingSoon">
-	<span><img src="../kappa.webp" alt="Kappa" /></span><span style="color: lightcoral">Y</span>ou
-	can't register quite yet. For now this is for my use only!
-	<span><img src="../kappa.webp" alt="Kappa" /></span>
+	<div class="cantRegister">You can't register quite yet.</div>
+	<div class="workInProgress">
+		Read and Write is a
+		<a href="/Floyd/Work%20in%20Progress">work in progress.</a>
+	</div>
 </div>
 {#if $loginOrRegister && data.blah}
 	<div class="auth" in:fade={{ duration: 300 }}>
@@ -80,23 +82,39 @@
 <style>
 	.comingSoon {
 		margin: 40px auto;
-		font-size: 31px;
+		font-size: 25px;
+		height: fit-content;
+		min-width: 300px;
+		max-width: 600px;
 		display: flex;
+		flex-direction: column;
+		gap: 20px;
 		align-items: center;
-		width: fit-content;
 		border: 3px solid black;
-		padding: 8px;
+		padding: 20px;
 		border-radius: 5px;
 		background: #eee;
 		box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
 		user-select: none;
 	}
-	.comingSoon img {
-		height: 62px;
+	.cantRegister {
+		color: #0e4b3c;
+		font-weight: bold;
+		text-align: center;
+		width: 100%;
 	}
 	.comingSoon:hover {
 		color: white;
 		background: #333;
+	}
+	.comingSoon a {
+		color: lightcoral;
+	}
+	.comingSoon a:hover {
+		color: white;
+		cursor: pointer;
+		padding-bottom: 8px;
+		border-bottom: 3px solid lightcoral;
 	}
 	.auth {
 		margin: 40px 0px;
@@ -117,11 +135,6 @@
 		font-style: normal;
 		margin-left: 8px;
 		margin-right: 5px;
-	}
-
-	a:hover {
-		font-weight: bold;
-		font-size: 16px;
 	}
 
 	form {

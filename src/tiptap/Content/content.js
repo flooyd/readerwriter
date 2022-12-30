@@ -1025,6 +1025,51 @@ export const BackgroundImage = Extension.create({
 	}
 });
 
+export const BackgroundSize = Extension.create({
+	name: 'backgroundSize',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					backgroundSize: {
+						default: null,
+						parseHTML: (element) => element.style.backgroundSize?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.backgroundSize) {
+								return {};
+							}
+
+							return {
+								style: `background-size: ${attributes.backgroundSize}`
+							};
+						}
+					}
+				}
+			}
+		];
+	},
+	addCommands() {
+		return {
+			unsetBackgroundSize:
+				() =>
+				({ chain }) => {
+					return chain()
+						.setMark('textStyle', { backgroundSize: null })
+						.removeEmptyTextStyle()
+						.run();
+				}
+		};
+	}
+});
+
 export const BackgroundColor = Extension.create({
 	name: 'backgroundColor',
 

@@ -10,6 +10,8 @@
 	import TextDecoration from '../../../tiptap/text-decoration';
 	import {
 		BackgroundColor,
+		BackgroundImage,
+		BackgroundSize,
 		BorderTopWidth,
 		BorderTopStyle,
 		BorderTopColor,
@@ -42,6 +44,7 @@
 
 	export let data;
 
+	let ready = false;
 	let element;
 	let titleElement;
 	let editor;
@@ -191,6 +194,12 @@
 				}),
 				Width.configure({
 					types: ['textStyle']
+				}),
+				BackgroundImage.configure({
+					types: ['textStyle']
+				}),
+				BackgroundSize.configure({
+					types: ['textStyle']
 				})
 			],
 
@@ -203,7 +212,8 @@
 				setCanBeMarkedAsTemplateVariable();
 			}
 		});
-		console.log(editor.view.dom.innerHTML);
+
+		ready = true;
 	};
 
 	const getSelectedText = () => {
@@ -466,6 +476,22 @@
 							</div>
 						</div>
 						<div class="option">
+							<label for="fontFamily">Font Family</label>
+							<div>
+								<form
+									class="inputForm"
+									on:submit={(e) => {
+										e.preventDefault();
+										let formValue = e.target.elements.namedItem('fontFamily').value;
+										editor.chain().focus().setMark('textStyle', { fontFamily: formValue }).run();
+									}}
+								>
+									<input type="text" name="fontFamily" />
+									<button>Apply</button>
+								</form>
+							</div>
+						</div>
+						<div class="option">
 							<label for="background">Background</label>
 							<form
 								class="inputForm"
@@ -487,6 +513,34 @@
 								}}
 							>
 								<input type="text" name="backgroundColor" />
+								<button>Apply</button>
+							</form>
+						</div>
+						<div class="option">
+							<label for="backgroundImage">Background Image</label>
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('backgroundImage').value;
+									editor.chain().focus().setMark('textStyle', { backgroundImage: formValue }).run();
+								}}
+							>
+								<input type="text" name="backgroundImage" />
+								<button>Apply</button>
+							</form>
+						</div>
+						<div class="option">
+							<label for="backgroundImage">Background Size</label>
+							<form
+								class="inputForm"
+								on:submit={(e) => {
+									e.preventDefault();
+									let formValue = e.target.elements.namedItem('backgroundSize').value;
+									editor.chain().focus().setMark('textStyle', { backgroundSize: formValue }).run();
+								}}
+							>
+								<input type="text" name="backgroundSize" />
 								<button>Apply</button>
 							</form>
 						</div>
@@ -721,6 +775,10 @@
 	</div>
 {/if}
 {#if data.username === data.user}
+	<div class="topLineDescription">
+		The line below represents the top of the page. Add some margin or padding to prevent text from
+		running against the screen.
+	</div>
 	<div
 		bind:this={element}
 		on:click={() => {
@@ -757,9 +815,6 @@
 {/if}
 
 <style>
-	.viewer {
-		padding: 20px;
-	}
 	.toolbar {
 		display: flex;
 		flex-direction: column;
@@ -844,5 +899,9 @@
 		border: 2px solid black;
 		border-radius: 5px;
 		width: 100px;
+	}
+	.topLineDescription {
+		margin-bottom: 8px;
+		margin-left: 20px;
 	}
 </style>

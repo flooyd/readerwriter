@@ -1,20 +1,6 @@
 .ProseMirror {
-	padding: 0px 20px;
-	margin: 0px;
-	ul,
-	ol {
-		padding: 0 1rem;
-	}
-
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		line-height: 1.1;
-	}
-
+	padding: 0px;
+	border-top: 1px solid black;
 	code {
 		background-color: rgba(#616161, 0.1);
 		color: #616161;
@@ -34,28 +20,8 @@
 			font-size: 0.8rem;
 		}
 	}
-
-	img {
-		max-width: 100%;
-		height: auto;
-	}
-
-	blockquote {
-		padding-left: 1rem;
-		border-left: 2px solid rgba(#0d0d0d, 0.1);
-	}
-
-	hr {
-		border: none;
-		border-top: 2px solid rgba(#0d0d0d, 0.1);
-		margin: 2rem 0;
-	}
 }
 
-.ProseMirror .is-empty::before {
-	content: attr(data-placeholder);
-	float: left;
-	color: #ced4da;
-	pointer-events: none;
-	height: 0;
+.ProseMirror * {
+	box-sizing: border-box;
 }
