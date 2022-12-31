@@ -23,7 +23,8 @@ import {
 	Height,
 	Width,
 	BackgroundImage,
-	BackgroundSize
+	BackgroundSize,
+	TextDecoration
 } from './content';
 
 export * from './content';
@@ -53,5 +54,6 @@ export default {
 	Height,
 	Width,
 	BackgroundImage,
-	BackgroundSize
+	BackgroundSize,
+	TextDecoration
 };

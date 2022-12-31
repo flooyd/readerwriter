@@ -1,13 +1,14 @@
 <script>
 	import './styles.scss';
-	import StarterKit from '@tiptap/starter-kit';
+	import History from '@tiptap/extension-history';
 	import Paragraph from '@tiptap/extension-paragraph';
+	import Document from '@tiptap/extension-document';
+	import Text from '@tiptap/extension-text';
 	import Link from '@tiptap/extension-link';
 	import Color from '@tiptap/extension-color';
 	import FontFamily from '@tiptap/extension-font-family';
 	import TextStyle from '../../../tiptap/text-style';
 	import FontSize from '../../../tiptap/font-size';
-	import TextDecoration from '../../../tiptap/text-decoration';
 	import {
 		BackgroundColor,
 		BackgroundImage,
@@ -33,17 +34,56 @@
 		MarginBottom,
 		MarginLeft,
 		Height,
-		Width
+		Width,
+		TextDecoration
 	} from '../../../tiptap/Content';
-	import { Editor, generateHTML } from '@tiptap/core';
-	import { onMount, tick } from 'svelte';
+	import StyleOption from '../../../StyleOption.svelte';
+	import { Editor } from '@tiptap/core';
+	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 	import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 	import { lowlight } from 'lowlight';
 	import js from 'highlight.js/lib/languages/javascript';
 
 	export let data;
+	let colorInputs = ['backgroundColor', 'fontColor'];
+	let styleOptions = `BackgroundColor,
+		BackgroundImage,
+		BackgroundSize,
+		BorderTopWidth,
+		BorderTopStyle,
+		BorderTopColor,
+		BorderRightWidth,
+		BorderRightStyle,
+		BorderRightColor,
+		BorderBottomWidth,
+		BorderBottomStyle,
+		BorderBottomColor,
+		BorderLeftWidth,
+		BorderLeftStyle,
+		BorderLeftColor,
+		Color,
+		PaddingTop,
+		PaddingRight,
+		PaddingBottom,
+		PaddingLeft,
+		MarginTop,
+		MarginRight,
+		MarginBottom,
+		MarginLeft,
+		Height,
+		Width,
+		TextDecoration,
+		FontSize`
+		.replace(/\s+/g, '')
+		.trim();
+	styleOptions = styleOptions.split(',').map((style) => {
+		let name = style.replace(style[0], style[0].toLowerCase());
+		let label = style.replace(/([A-Z])/g, ' $1').trim();
+		return { name, label };
+	});
 
+	let styleOptionNames = styleOptions.map((style) => style.name);
 	let ready = false;
 	let element;
 	let titleElement;
@@ -78,12 +118,6 @@
 		lowlight.registerLanguage('js', js);
 
 		newEditor();
-
-		titleEditor = new Editor({
-			element: titleElement,
-			extensions: [StarterKit, FontSize, TextStyle],
-			content: data.article.title
-		});
 	});
 
 	const handleTitleSave = () => {
@@ -96,24 +130,18 @@
 		editor = new Editor({
 			element: element,
 			extensions: [
-				StarterKit.configure({
-					codeBlock: false,
-					strike: false,
-					TextStyle: false,
-					paragraph: false
-				}),
+				Document,
+				Paragraph,
+				Text,
+				History,
 				Link.configure({
 					linkOnPaste: true,
 					autolink: true,
 					protocols: ['ftp', 'mailto', 'http', 'https']
 				}),
 				CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'js' }),
+
 				TextStyle,
-				Paragraph.configure({
-					HTMLAttributes: {
-						class: 'my-custom-class'
-					}
-				}),
 				FontSize.configure({
 					types: ['textStyle']
 				}),
@@ -338,7 +366,7 @@
 		</form>
 		<div class="editorToolbar" bind:offsetHeight={editorToolbarHeight}>
 			<div>
-				<button
+				<!-- <button
 					on:click={() => editor.chain().focus().setBold().run()}
 					disabled={!editor.can().chain().focus().toggleBold().run()}
 					class={editor.isActive('bold') ? 'is-active' : ''}
@@ -351,7 +379,7 @@
 					class={editor.isActive('italic') ? 'is-active' : ''}
 				>
 					<i class="fa-solid fa-italic" />
-				</button>
+				</button> -->
 				<button
 					on:click={() => editor.chain().focus().setTextDecoration('line-through').run()}
 					disabled={false}
@@ -366,13 +394,13 @@
 						setLink();
 					}}><i class="fa-solid fa-link" /></button
 				>
-				<button
+				<!-- <button
 					on:click={() => editor.chain().focus().toggleCode().run()}
 					disabled={!editor.can().chain().focus().toggleCode().run()}
 					class={editor.isActive('code') ? 'is-active' : ''}
 				>
 					<i class="fa-solid fa-code" />
-				</button>
+				</button> -->
 				<button
 					on:click={() => {
 						if (options === 'textStyle') {
@@ -393,16 +421,6 @@
 				>
 					<i class="fa-regular fa-file-code" />
 				</button>
-				<button disabled={!canBeMarkedAsTemplateVariable}><i class="fa-solid fa-cube" /></button>
-				<button
-					on:click={() => {
-						console.log(editor.view.state.selection);
-						editor.chain().focus().selectParentNode();
-						console.log(editor.view.state.selection);
-					}}
-				>
-					<i class="fa-solid fa-person" />
-				</button>
 				<button
 					on:click={() => editor.chain().focus().undo().run()}
 					disabled={!editor.can().chain().focus().undo().run()}
@@ -417,358 +435,10 @@
 				</button>
 			</div>
 			{#if options}
-				<div class="options" style={`top: ${editorToolbarHeight}px`}>
-					{#if options === 'textStyle'}
-						<div class="option">
-							<label for="fontSize">Font Size</label>
-							<div>
-								<button
-									on:click={() => {
-										editor.chain().focus().setMark('textStyle', { fontSize: '100px' }).run();
-										fontSizeValue = '16px';
-									}}><i class="fa-solid fa-cancel" /></button
-								>
-								<button
-									on:click={() => {
-										fontSizeValue = parseInt(fontSizeValue) - 1 + 'px';
-										editor.chain().focus().setMark('textStyle', { fontSize: fontSizeValue }).run();
-									}}>-</button
-								>
-								<input bind:value={fontSizeValue} type="text" name="fontSize" />
-								<button
-									on:click={() => {
-										fontSizeValue = parseInt(fontSizeValue) + 1 + 'px';
-										editor.chain().focus().setMark('textStyle', { fontSize: fontSizeValue }).run();
-									}}>+</button
-								>
-								<button
-									on:click={() => {
-										editor.chain().focus().setMark('textStyle', { fontFamily: 'serif' }).run();
-									}}>font family</button
-								>
-							</div>
-						</div>
-						<div class="option">
-							<label for="fontColor">Font Color</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('color').value;
-										editor.chain().focus().setMark('textStyle', { color: formValue }).run();
-									}}
-								>
-									<input type="color" name="color" />
-									<button>Apply</button>
-								</form>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('color').value;
-										editor.chain().focus().setMark('textStyle', { color: formValue }).run();
-									}}
-								>
-									<input type="text" name="color" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="fontFamily">Font Family</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('fontFamily').value;
-										editor.chain().focus().setMark('textStyle', { fontFamily: formValue }).run();
-									}}
-								>
-									<input type="text" name="fontFamily" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Background</label>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('backgroundColor').value;
-									editor.chain().focus().setMark('textStyle', { backgroundColor: formValue }).run();
-								}}
-							>
-								<input type="color" name="backgroundColor" />
-								<button>Apply</button>
-							</form>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('backgroundColor').value;
-									editor.chain().focus().setMark('textStyle', { backgroundColor: formValue }).run();
-								}}
-							>
-								<input type="text" name="backgroundColor" />
-								<button>Apply</button>
-							</form>
-						</div>
-						<div class="option">
-							<label for="backgroundImage">Background Image</label>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('backgroundImage').value;
-									editor.chain().focus().setMark('textStyle', { backgroundImage: formValue }).run();
-								}}
-							>
-								<input type="text" name="backgroundImage" />
-								<button>Apply</button>
-							</form>
-						</div>
-						<div class="option">
-							<label for="backgroundImage">Background Size</label>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('backgroundSize').value;
-									editor.chain().focus().setMark('textStyle', { backgroundSize: formValue }).run();
-								}}
-							>
-								<input type="text" name="backgroundSize" />
-								<button>Apply</button>
-							</form>
-						</div>
-						<div class="option">
-							<label for="background">Border-Top</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { borderTopWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderTopStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderTopColor: 'black' }).run();
-								}}>3px solid black</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetBorderTopWidth().run();
-									editor.chain().focus().unsetBorderTopStyle().run();
-									editor.chain().focus().unsetBorderTopColor().run();
-								}}>none</button
-							>
-						</div>
-						<div class="option">
-							<label for="background">Border-Right</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { borderRightWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderRightStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderRightColor: 'black' }).run();
-								}}>3px solid black</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetBorderRightWidth().run();
-									editor.chain().focus().unsetBorderRightStyle().run();
-									editor.chain().focus().unsetBorderRightColor().run();
-								}}>none</button
-							>
-						</div>
-						<div class="option">
-							<label for="background">Border-Bottom</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { borderBottomWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderBottomStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderBottomColor: 'black' }).run();
-								}}>3px solid black</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetBorderBottomWidth().run();
-									editor.chain().focus().unsetBorderBottomStyle().run();
-									editor.chain().focus().unsetBorderBottomColor().run();
-								}}>none</button
-							>
-						</div>
-						<div class="option">
-							<label for="background">Border-Left</label>
-							<button
-								on:click={() => {
-									editor.chain().focus().setMark('textStyle', { borderLeftWidth: '3px' }).run();
-									editor.chain().focus().setMark('textStyle', { borderLeftStyle: 'solid' }).run();
-									editor.chain().focus().setMark('textStyle', { borderLeftColor: 'black' }).run();
-								}}>3px solid black</button
-							>
-							<button
-								on:click={() => {
-									editor.chain().focus().unsetBorderLeftWidth().run();
-									editor.chain().focus().unsetBorderLeftStyle().run();
-									editor.chain().focus().unsetBorderLeftColor().run();
-								}}>none</button
-							>
-						</div>
-						<div class="option">
-							<label for="background">Margin-Top</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('marginTop').value;
-										editor.chain().focus().setMark('textStyle', { marginTop: formValue }).run();
-									}}
-								>
-									<input type="text" name="marginTop" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Margin-Right</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('marginRight').value;
-										editor.chain().focus().setMark('textStyle', { marginRight: formValue }).run();
-									}}
-								>
-									<input type="text" name="marginRight" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Margin-Bottom</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('marginBottom').value;
-										editor.chain().focus().setMark('textStyle', { marginBottom: formValue }).run();
-									}}
-								>
-									<input type="text" name="marginBottom" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Margin-Left</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('marginLeft').value;
-										editor.chain().focus().setMark('textStyle', { marginLeft: formValue }).run();
-									}}
-								>
-									<input type="text" name="marginLeft" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Padding-Top</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('paddingTop').value;
-										editor.chain().focus().setMark('textStyle', { paddingTop: formValue }).run();
-									}}
-								>
-									<input type="text" name="paddingTop" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Padding-Right</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('paddingRight').value;
-										editor.chain().focus().setMark('textStyle', { paddingRight: formValue }).run();
-									}}
-								>
-									<input type="text" name="paddingRight" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Padding-Bottom</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('paddingBottom').value;
-										editor.chain().focus().setMark('textStyle', { paddingBottom: formValue }).run();
-									}}
-								>
-									<input type="text" name="paddingBottom" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Padding-Left</label>
-							<div>
-								<form
-									class="inputForm"
-									on:submit={(e) => {
-										e.preventDefault();
-										let formValue = e.target.elements.namedItem('paddingLeft').value;
-										editor.chain().focus().setMark('textStyle', { paddingLeft: formValue }).run();
-									}}
-								>
-									<input type="text" name="paddingLeft" />
-									<button>Apply</button>
-								</form>
-							</div>
-						</div>
-						<div class="option">
-							<label for="background">Height</label>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('height').value;
-									editor.chain().focus().setMark('textStyle', { height: formValue }).run();
-								}}
-							>
-								<input type="text" name="height" />
-								<button>Apply</button>
-							</form>
-						</div>
-						<div class="option">
-							<label for="background">Width</label>
-							<form
-								class="inputForm"
-								on:submit={(e) => {
-									e.preventDefault();
-									let formValue = e.target.elements.namedItem('width').value;
-									editor.chain().focus().setMark('textStyle', { width: formValue }).run();
-								}}
-							>
-								<input type="text" name="width" />
-								<button>Apply</button>
-							</form>
-						</div>
-					{/if}
+				<div class="options">
+					{#each styleOptions as styleOption (styleOption.name)}
+						<StyleOption {editor} name={styleOption.name} label={styleOption.label} />
+					{/each}
 				</div>
 			{/if}
 		</div>
@@ -851,44 +521,18 @@
 	}
 
 	.options {
-		width: fit-content;
+		min-width: 500px;
 		padding: 8px;
 		border: 3px solid black;
 		border-radius: 5px;
 		display: flex;
 		flex-direction: column;
 		gap: 13px;
-		min-width: 250px;
 		position: absolute;
 		background: white;
 		left: -3px;
 		opacity: 0.9;
 		z-index: 5;
-	}
-	.option {
-		display: flex;
-		gap: 8px;
-		justify-content: space-between;
-		align-items: center;
-	}
-	.inputForm {
-		display: flex;
-		margin-right: 13px;
-		gap: 8px;
-	}
-	.options .option button {
-		margin: 0px;
-	}
-	.option label {
-		min-width: 100px;
-	}
-	.option div {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-	}
-	.option input {
-		margin: 0px;
 	}
 	.is-active {
 		background: lightcoral;

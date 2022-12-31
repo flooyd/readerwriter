@@ -979,7 +979,7 @@ export const Width = Extension.create({
 	}
 });
 //#endregion
-//region BACKGROUND
+//#region BACKGROUND
 export const BackgroundImage = Extension.create({
 	name: 'backgroundImage',
 
@@ -1112,5 +1112,38 @@ export const BackgroundColor = Extension.create({
 						.run();
 				}
 		};
+	}
+});
+//#endregion
+//#region
+export const TextDecoration = Extension.create({
+	name: 'textDecoration',
+
+	addOptions() {
+		return {
+			types: ['textStyle']
+		};
+	},
+	addGlobalAttributes() {
+		return [
+			{
+				types: this.options.types,
+				attributes: {
+					textDecoration: {
+						default: null,
+						parseHTML: (element) => element.style.textDecoration?.replace(/['"]+/g, ''),
+						renderHTML: (attributes) => {
+							if (!attributes.textDecoration) {
+								return {};
+							}
+
+							return {
+								style: `text-decoration: ${attributes.textDecoration}`
+							};
+						}
+					}
+				}
+			}
+		];
 	}
 });
